@@ -1,0 +1,3001 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Majas Hunter — Escape Room Majas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@400;500;600;700;800;900&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --green:#22c55e; --green-deep:#16a34a; --green-pale:#dcfce7;
+  --sky:#38bdf8; --sky-deep:#0ea5e9; --sky-pale:#e0f2fe;
+  --violet:#a855f7; --violet-deep:#7c3aed; --violet-pale:#f3e8ff;
+  --gold:#fbbf24; --gold-deep:#b45309; --gold-pale:#fef3c7;
+  --yellow:#fde047; --yellow-deep:#eab308;
+  --white:#ffffff; --cream:#fffbf0;
+  --pink:#ec4899; --pink-deep:#db2777; --pink-pale:#fce7f3;
+  --ink:#2d1b4e; --ink-soft:#4c3575; --ink-dim:#6b5b8f; --ink-faint:#a89cc4;
+  --red:#ef4444;
+  --wood-light:#a67c52; --wood:#7c5a3a; --wood-dark:#4a3218; --wood-darker:#2e1f0e;
+  --vine:#15803d; --vine-light:#22c55e; --vine-dark:#14532d;
+  --glass-brd:rgba(168,85,247,.2);
+  --shadow-lg:0 20px 50px rgba(124,58,237,.15);
+  --shadow-md:0 8px 24px rgba(124,58,237,.12);
+  --radius:24px;
+}
+html,body{min-height:100%;font-family:'Inter',system-ui,sans-serif;color:var(--ink);
+  background:var(--cream);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;overflow-x:hidden;}
+body{overflow-y:auto;position:relative;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+input{font-family:inherit;user-select:text;}
+::selection{background:var(--gold);color:var(--ink);}
+::-webkit-scrollbar{width:10px;height:10px;}
+::-webkit-scrollbar-track{background:var(--violet-pale);}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--violet),var(--gold),var(--pink),var(--sky));
+  border-radius:99px;border:2px solid var(--cream);background-clip:padding-box;}
+
+#bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;
+  background:
+    radial-gradient(circle at 10% 10%,rgba(34,197,94,.15),transparent 40%),
+    radial-gradient(circle at 90% 15%,rgba(56,189,248,.18),transparent 40%),
+    radial-gradient(circle at 15% 85%,rgba(236,72,153,.15),transparent 40%),
+    radial-gradient(circle at 85% 80%,rgba(168,85,247,.18),transparent 40%),
+    radial-gradient(circle at 50% 50%,rgba(251,191,36,.1),transparent 50%),
+    linear-gradient(180deg,#fffbf0 0%,#fef9ee 25%,#f0f9ff 50%,#f5f0ff 75%,#eef4ff 100%);}
+#bg::before{content:'';position:absolute;inset:0;opacity:.28;
+  background-image:
+    repeating-linear-gradient(90deg,transparent 0,transparent 58px,rgba(168,85,247,.08) 58px,rgba(168,85,247,.08) 60px),
+    repeating-linear-gradient(0deg,transparent 0,transparent 58px,rgba(34,197,94,.08) 58px,rgba(34,197,94,.08) 60px),
+    radial-gradient(circle at 50% 50%,rgba(251,191,36,.12) 2px,transparent 2px);
+  background-size:auto,auto,60px 60px;
+  mask-image:radial-gradient(ellipse at center,black 40%,transparent 95%);
+  -webkit-mask-image:radial-gradient(ellipse at center,black 40%,transparent 95%);}
+.bokeh{position:absolute;border-radius:50%;opacity:0;
+  animation:bokehFloat linear infinite;pointer-events:none;filter:blur(1px);}
+@keyframes bokehFloat{
+  0%{opacity:0;transform:translateY(100vh) scale(.5);}
+  15%{opacity:.8;}85%{opacity:.8;}
+  100%{opacity:0;transform:translateY(-15vh) scale(1.3);}
+}
+
+/* ============================================================
+   PERPUSTAKAAN 3D — DEKORASI BACKGROUND
+============================================================ */
+.library-deco{
+  position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;
+  perspective:1200px;perspective-origin:center 40%;
+}
+.library-back-wall{
+  position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(90deg,
+      transparent 0, transparent 180px,
+      rgba(74,50,24,.15) 180px, rgba(74,50,24,.15) 184px);
+  mask-image:radial-gradient(ellipse at center top,black 30%,transparent 80%);
+  -webkit-mask-image:radial-gradient(ellipse at center top,black 30%,transparent 80%);
+}
+.library-carpet{
+  position:absolute;bottom:-60px;left:50%;transform:translateX(-50%);
+  width:140%;height:260px;
+  background:
+    radial-gradient(ellipse at center bottom,rgba(124,58,237,.15) 0%,rgba(180,83,9,.12) 40%,transparent 75%);
+  mask-image:radial-gradient(ellipse at center,black 40%,transparent 90%);
+  -webkit-mask-image:radial-gradient(ellipse at center,black 40%,transparent 90%);
+  z-index:0;
+}
+.library-carpet::before{
+  content:'';position:absolute;inset:20px;border-radius:50%;
+  background:
+    repeating-linear-gradient(45deg,rgba(251,191,36,.06) 0,rgba(251,191,36,.06) 20px,transparent 20px,transparent 40px),
+    repeating-linear-gradient(-45deg,rgba(168,85,247,.06) 0,rgba(168,85,247,.06) 20px,transparent 20px,transparent 40px);
+  opacity:.7;
+}
+
+/* ============================================================
+   RAK BUKU TUA 3D
+============================================================ */
+.bookshelf{
+  position:absolute;z-index:2;
+  transform-style:preserve-3d;
+}
+.bookshelf.left-top{
+  top:20px;left:14px;
+  width:200px;
+  transform:rotateY(18deg) rotateX(4deg);
+  animation:shelfSway 8s ease-in-out infinite;
+}
+.bookshelf.right-top{
+  top:20px;right:14px;
+  width:200px;
+  transform:rotateY(-18deg) rotateX(4deg);
+  animation:shelfSway 9s ease-in-out infinite reverse;
+}
+@keyframes shelfSway{
+  0%,100%{transform:rotateY(18deg) rotateX(4deg) translateY(0);}
+  50%{transform:rotateY(16deg) rotateX(5deg) translateY(-3px);}
+}
+.bookshelf.right-top{animation-name:shelfSwayR;}
+@keyframes shelfSwayR{
+  0%,100%{transform:rotateY(-18deg) rotateX(4deg) translateY(0);}
+  50%{transform:rotateY(-16deg) rotateX(5deg) translateY(-3px);}
+}
+
+.shelf-frame{
+  background:linear-gradient(180deg,var(--wood-light),var(--wood),var(--wood-dark));
+  border:3px solid var(--wood-darker);
+  border-radius:6px;
+  padding:8px 6px;
+  box-shadow:
+    0 20px 40px rgba(0,0,0,.5),
+    inset 0 2px 0 rgba(255,255,255,.2),
+    inset 0 -2px 0 rgba(0,0,0,.4),
+    0 0 30px rgba(251,191,36,.15);
+  position:relative;
+}
+.shelf-frame::before{
+  content:'';position:absolute;inset:0;border-radius:6px;
+  background:
+    repeating-linear-gradient(88deg,rgba(0,0,0,.08) 0,rgba(0,0,0,.08) 1px,transparent 1px,transparent 5px);
+  pointer-events:none;
+}
+.shelf-row{
+  display:flex;align-items:flex-end;justify-content:flex-start;
+  height:44px;
+  background:linear-gradient(180deg,rgba(0,0,0,.3),rgba(0,0,0,.5));
+  border-radius:2px;
+  padding:0 4px;
+  margin-bottom:5px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:inset 0 3px 6px rgba(0,0,0,.6);
+}
+.shelf-row:last-child{margin-bottom:0;}
+.book{
+  width:8px;height:32px;border-radius:1px;
+  position:relative;
+  box-shadow:inset -1px 0 0 rgba(0,0,0,.3),inset 1px 0 0 rgba(255,255,255,.15),0 1px 2px rgba(0,0,0,.4);
+  transform-origin:bottom center;
+  transition:transform .3s;
+}
+.book::before{
+  content:'';position:absolute;top:3px;left:1px;right:1px;height:1px;
+  background:rgba(251,191,36,.4);
+}
+.book::after{
+  content:'';position:absolute;bottom:3px;left:1px;right:1px;height:1px;
+  background:rgba(251,191,36,.4);
+}
+.book.tall{height:38px;width:9px;}
+.book.short{height:26px;width:7px;}
+.book.thick{width:12px;}
+.book.leaning{transform:rotate(12deg);margin-left:2px;margin-right:2px;}
+.book.leaning-l{transform:rotate(-12deg);margin-left:2px;margin-right:2px;}
+.bk-red{background:linear-gradient(180deg,#b91c1c,#7f1d1d);}
+.bk-blue{background:linear-gradient(180deg,#1e40af,#1e3a8a);}
+.bk-green{background:linear-gradient(180deg,#15803d,#14532d);}
+.bk-purple{background:linear-gradient(180deg,#7c3aed,#5b21b6);}
+.bk-gold{background:linear-gradient(180deg,#d97706,#92400e);}
+.bk-brown{background:linear-gradient(180deg,#78350f,#451a03);}
+.bk-teal{background:linear-gradient(180deg,#0d9488,#115e59);}
+.bk-pink{background:linear-gradient(180deg,#be185d,#831843);}
+.bk-dark{background:linear-gradient(180deg,#1f2937,#111827);}
+.bk-cream{background:linear-gradient(180deg,#fef3c7,#fde68a);}
+.bk-black{background:linear-gradient(180deg,#0a0505,#000);}
+
+.flying-book{
+  position:absolute;
+  width:24px;height:32px;
+  border-radius:2px;
+  transform-style:preserve-3d;
+  animation:bookFloat 6s ease-in-out infinite;
+  box-shadow:0 8px 20px rgba(0,0,0,.3);
+  z-index:3;
+}
+.flying-book::before{
+  content:'';position:absolute;inset:2px;
+  border-left:2px solid rgba(255,255,255,.3);
+  border-right:2px solid rgba(255,255,255,.3);
+}
+@keyframes bookFloat{
+  0%,100%{transform:translateY(0) rotate(-8deg) rotateZ(3deg);}
+  50%{transform:translateY(-12px) rotate(8deg) rotateZ(-3deg);}
+}
+.flying-book.fb1{top:8%;left:8%;animation-delay:0s;}
+.flying-book.fb2{top:12%;right:12%;animation-delay:1.5s;animation-duration:7s;}
+.flying-book.fb3{top:38%;left:6%;animation-delay:3s;animation-duration:5s;}
+
+.reading-corner{
+  position:absolute;bottom:20px;right:16px;
+  width:180px;height:180px;
+  transform-style:preserve-3d;
+  transform:rotateY(-15deg) rotateX(6deg);
+  z-index:2;
+  animation:cornerSway 10s ease-in-out infinite;
+}
+.reading-corner.left{bottom:20px;left:16px;right:auto;
+  transform:rotateY(15deg) rotateX(6deg);}
+@keyframes cornerSway{
+  0%,100%{transform:rotateY(-15deg) rotateX(6deg);}
+  50%{transform:rotateY(-13deg) rotateX(7deg);}
+}
+.reading-corner.left{animation-name:cornerSwayL;}
+@keyframes cornerSwayL{
+  0%,100%{transform:rotateY(15deg) rotateX(6deg);}
+  50%{transform:rotateY(13deg) rotateX(7deg);}
+}
+
+.old-chair{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:80px;height:110px;
+}
+.chair-back{
+  position:absolute;bottom:40px;left:50%;transform:translateX(-50%);
+  width:70px;height:65px;
+  background:linear-gradient(180deg,#5c3a1e,#3d2410);
+  border:2px solid var(--wood-darker);
+  border-radius:8px 8px 2px 2px;
+  box-shadow:inset 0 2px 8px rgba(0,0,0,.5),inset 0 -3px 6px rgba(0,0,0,.7),0 3px 8px rgba(0,0,0,.4);
+}
+.chair-back::before{
+  content:'';position:absolute;inset:0;border-radius:8px 8px 2px 2px;
+  background:
+    linear-gradient(88deg,transparent 0,transparent 40%,rgba(0,0,0,.4) 40%,rgba(0,0,0,.4) 41%,transparent 41%),
+    linear-gradient(94deg,transparent 0,transparent 65%,rgba(0,0,0,.35) 65%,rgba(0,0,0,.35) 66%,transparent 66%);
+}
+.chair-seat{
+  position:absolute;bottom:30px;left:50%;transform:translateX(-50%);
+  width:80px;height:14px;
+  background:linear-gradient(180deg,#6b4423,#4a2c15);
+  border:2px solid var(--wood-darker);
+  border-radius:3px;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.2),inset 0 -2px 4px rgba(0,0,0,.5),0 3px 8px rgba(0,0,0,.4);
+}
+.chair-leg{
+  position:absolute;bottom:0;
+  width:6px;height:32px;
+  background:linear-gradient(180deg,#4a2c15,#2e1f0e);
+  border-radius:2px;
+}
+.chair-leg.l1{left:14px;}
+.chair-leg.l2{right:14px;}
+.chair-leg::after{
+  content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);
+  width:8px;height:3px;background:#1a1008;border-radius:50%;
+}
+.chair-pillow{
+  position:absolute;bottom:44px;left:50%;transform:translateX(-50%);
+  width:50px;height:18px;
+  background:linear-gradient(180deg,#c4b5fd,#7c3aed);
+  border-radius:8px;
+  box-shadow:inset 0 2px 3px rgba(255,255,255,.4),0 2px 6px rgba(0,0,0,.3);
+}
+.chair-pillow::after{
+  content:'';position:absolute;inset:3px;
+  border:1px dashed rgba(255,255,255,.4);border-radius:5px;
+}
+
+.side-table{
+  position:absolute;bottom:20px;right:-10px;
+  width:44px;height:70px;
+}
+.table-top{
+  position:absolute;bottom:46px;left:50%;transform:translateX(-50%);
+  width:44px;height:8px;
+  background:linear-gradient(180deg,#8b6d3a,#5c4028);
+  border-radius:3px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 2px 4px rgba(0,0,0,.4);
+}
+.table-leg{
+  position:absolute;bottom:0;width:4px;height:46px;
+  background:linear-gradient(180deg,#5c4028,#2e1f0e);
+  border-radius:1px;
+}
+.table-leg.l1{left:8px;}
+.table-leg.l2{right:8px;}
+
+.desk-lamp{
+  position:absolute;bottom:54px;left:50%;transform:translateX(-50%);
+  width:18px;height:26px;
+}
+.lamp-shade{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:18px;height:14px;
+  background:linear-gradient(180deg,#fde68a,#d97706);
+  border:1px solid #92400e;
+  border-radius:8px 8px 0 0;
+  box-shadow:0 0 10px rgba(251,191,36,.7),inset 0 2px 0 rgba(255,255,255,.4);
+}
+.lamp-shade::before{
+  content:'';position:absolute;top:-2px;left:50%;transform:translateX(-50%);
+  width:12px;height:4px;background:#92400e;border-radius:50%;
+}
+.lamp-stem{
+  position:absolute;top:14px;left:50%;transform:translateX(-50%);
+  width:2px;height:10px;background:#5c4028;
+}
+.lamp-base{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:12px;height:3px;background:#5c4028;border-radius:2px;
+}
+.lamp-glow{
+  position:absolute;top:6px;left:50%;transform:translateX(-50%);
+  width:60px;height:60px;border-radius:50%;
+  background:radial-gradient(circle,rgba(251,191,36,.4),transparent 70%);
+  animation:lampPulse 2s ease-in-out infinite;
+  pointer-events:none;z-index:-1;
+}
+@keyframes lampPulse{
+  0%,100%{opacity:.6;transform:translateX(-50%) scale(.9);}
+  50%{opacity:1;transform:translateX(-50%) scale(1.1);}
+}
+
+.arched-window{
+  position:absolute;top:40px;right:20px;
+  width:80px;height:130px;
+  border-radius:40px 40px 4px 4px;
+  background:linear-gradient(180deg,#1e293b,#0f172a);
+  border:4px solid var(--wood-darker);
+  box-shadow:
+    inset 0 0 20px rgba(0,0,0,.8),
+    0 4px 10px rgba(0,0,0,.4);
+  overflow:hidden;
+  z-index:1;
+}
+.arched-window::before{
+  content:'';position:absolute;inset:4px;border-radius:36px 36px 2px 2px;
+  background:
+    radial-gradient(circle at 50% 30%,rgba(251,191,36,.5),transparent 40%),
+    radial-gradient(circle at 50% 60%,rgba(56,189,248,.2),transparent 50%),
+    linear-gradient(180deg,#1e293b 0%,#334155 50%,#0f172a 100%);
+}
+.arched-window::after{
+  content:'';position:absolute;top:50%;left:4px;right:4px;height:4px;
+  background:var(--wood-darker);
+}
+.window-moon{
+  position:absolute;top:20%;left:50%;transform:translateX(-50%);
+  width:20px;height:20px;border-radius:50%;
+  background:radial-gradient(circle,#fef9c3,#fbbf24);
+  box-shadow:0 0 20px rgba(251,191,36,.9),0 0 40px rgba(251,191,36,.4);
+  z-index:2;
+}
+.window-beam{
+  position:absolute;top:100px;right:80px;
+  width:300px;height:300px;
+  background:linear-gradient(225deg,rgba(251,191,36,.15) 0%,transparent 60%);
+  clip-path:polygon(100% 0,0 100%,100% 100%);
+  pointer-events:none;z-index:0;
+  opacity:.5;
+  animation:beamSway 8s ease-in-out infinite;
+}
+@keyframes beamSway{
+  0%,100%{opacity:.4;transform:translateX(0);}
+  50%{opacity:.6;transform:translateX(-20px);}
+}
+
+.hanging-lamp{
+  position:absolute;top:0;left:50%;
+  transform:translateX(-50%);
+  z-index:3;
+  transform-style:preserve-3d;
+  animation:hangSway 6s ease-in-out infinite;
+}
+@keyframes hangSway{
+  0%,100%{transform:translateX(-50%) rotate(-3deg);}
+  50%{transform:translateX(-50%) rotate(3deg);}
+}
+.lamp-wire{
+  width:2px;height:40px;
+  background:linear-gradient(180deg,#1f2937,#374151);
+  margin:0 auto;
+}
+.lamp-bulb{
+  width:20px;height:20px;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%,#fef9c3,#fbbf24 60%,#b45309);
+  box-shadow:
+    0 0 20px rgba(251,191,36,.9),
+    0 0 40px rgba(251,191,36,.5),
+    inset 0 -3px 5px rgba(0,0,0,.3);
+  position:relative;
+  margin:0 auto;
+}
+.lamp-bulb::before{
+  content:'';position:absolute;top:-6px;left:50%;transform:translateX(-50%);
+  width:8px;height:6px;background:#374151;border-radius:2px;
+}
+
+.oil-lantern{
+  position:absolute;bottom:80px;left:24px;
+  width:32px;height:48px;
+  z-index:2;
+  animation:lanternFlicker 3s ease-in-out infinite;
+}
+@keyframes lanternFlicker{
+  0%,100%{filter:drop-shadow(0 0 10px rgba(251,191,36,.7));}
+  50%{filter:drop-shadow(0 0 20px rgba(251,191,36,1));}
+}
+.lantern-top{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:20px;height:8px;
+  background:linear-gradient(180deg,#4b5563,#1f2937);
+  border-radius:8px 8px 0 0;
+}
+.lantern-top::before{
+  content:'';position:absolute;top:-4px;left:50%;transform:translateX(-50%);
+  width:10px;height:4px;border:1.5px solid #4b5563;
+  border-bottom:none;border-radius:5px 5px 0 0;
+}
+.lantern-body{
+  position:absolute;top:8px;left:50%;transform:translateX(-50%);
+  width:24px;height:32px;
+  background:linear-gradient(180deg,rgba(251,191,36,.35),rgba(217,119,6,.5));
+  border:2px solid #92400e;
+  border-radius:4px;
+  box-shadow:inset 0 0 12px rgba(251,191,36,.7);
+}
+.lantern-flame{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:8px;height:14px;
+  background:radial-gradient(ellipse at 50% 80%,#fef9c3,#fbbf24 50%,#ea580c);
+  border-radius:50% 50% 20% 20%;
+  animation:flameFlicker .3s ease-in-out infinite alternate;
+  box-shadow:0 0 8px #fbbf24;
+}
+@keyframes flameFlicker{
+  0%{transform:translate(-50%,-50%) scale(1) skewX(0);}
+  100%{transform:translate(-50%,-50%) scale(1.1) skewX(2deg);}
+}
+.lantern-base{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:28px;height:8px;
+  background:linear-gradient(180deg,#374151,#111827);
+  border-radius:0 0 4px 4px;
+}
+
+@media (max-width: 900px){
+  .library-deco .bookshelf,
+  .library-deco .reading-corner,
+  .library-deco .arched-window,
+  .library-deco .oil-lantern{opacity:.4;transform:scale(.75);}
+}
+@media (max-width: 640px){
+  .library-deco .bookshelf,
+  .library-deco .reading-corner,
+  .library-deco .arched-window,
+  .library-deco .oil-lantern,
+  .library-deco .flying-book{display:none;}
+  .library-deco{opacity:.4;}
+}
+
+/* ============================================================
+   SCREEN & UI
+============================================================ */
+.screen{position:relative;z-index:10;display:none;min-height:100vh;padding:24px 16px;
+  align-items:flex-start;justify-content:center;}
+.screen.active{display:flex;animation:screenIn .45s cubic-bezier(.34,1.56,.64,1) both;}
+@keyframes screenIn{from{opacity:0;transform:scale(.96);}to{opacity:1;transform:scale(1);}}
+.wrap{width:100%;max-width:560px;margin:auto;display:flex;flex-direction:column;gap:18px;padding:8px 0;}
+
+.card{position:relative;
+  background:linear-gradient(160deg,rgba(255,255,255,.96),rgba(255,255,255,.88));
+  backdrop-filter:blur(24px) saturate(150%);-webkit-backdrop-filter:blur(24px) saturate(150%);
+  border:2px solid var(--glass-brd);border-radius:var(--radius);
+  box-shadow:var(--shadow-lg),inset 0 2px 0 rgba(255,255,255,.9);
+  padding:28px 24px;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;
+  background:linear-gradient(90deg,
+    var(--red) 0%,var(--pink) 14%,var(--violet) 28%,var(--sky) 42%,
+    var(--green) 56%,var(--yellow) 70%,var(--gold) 85%,var(--red) 100%);
+  background-size:200% 100%;
+  animation:rainbowBar 8s linear infinite;}
+@keyframes rainbowBar{0%{background-position:0% 0;}100%{background-position:200% 0;}}
+.card-gold{border-color:rgba(251,191,36,.5);
+  box-shadow:var(--shadow-lg),0 0 60px rgba(251,191,36,.25),inset 0 2px 0 rgba(255,255,255,.9);}
+
+.title{font-family:'Fredoka',sans-serif;font-weight:700;line-height:1.05;letter-spacing:.5px;
+  background:linear-gradient(135deg,
+    var(--pink-deep) 0%,var(--violet-deep) 20%,var(--sky-deep) 40%,
+    var(--green-deep) 60%,var(--gold-deep) 80%,var(--pink-deep) 100%);
+  background-size:200% 200%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;text-align:center;
+  animation:titleShimmer 6s ease-in-out infinite;}
+@keyframes titleShimmer{0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;}}
+.title-xl{font-size:clamp(1.9rem,7vw,2.9rem);}
+.title-lg{font-size:clamp(1.3rem,4.5vw,1.8rem);}
+.eyebrow{font-size:.72rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;
+  background:linear-gradient(90deg,var(--green),var(--sky),var(--violet),var(--pink),var(--gold));
+  -webkit-background-clip:text;background-clip:text;color:transparent;text-align:center;}
+.subtle{color:var(--ink-dim);font-size:.92rem;line-height:1.6;text-align:center;}
+.hr{height:2px;border-radius:2px;
+  background:linear-gradient(90deg,transparent,var(--green),var(--sky),var(--violet),var(--pink),var(--gold),transparent);
+  margin:16px 0;}
+
+.escape-badge{display:inline-flex;align-items:center;gap:8px;
+  margin:8px auto 4px;padding:8px 18px;
+  background:linear-gradient(135deg,rgba(239,68,68,.15),rgba(251,191,36,.15));
+  border:2px solid var(--red);border-radius:12px;
+  font-size:.68rem;font-weight:900;letter-spacing:2px;text-transform:uppercase;
+  color:var(--red);box-shadow:0 0 20px rgba(239,68,68,.3);
+  animation:escapePulse 2s ease-in-out infinite;}
+@keyframes escapePulse{
+  0%,100%{box-shadow:0 0 20px rgba(239,68,68,.3);}
+  50%{box-shadow:0 0 30px rgba(239,68,68,.6);}
+}
+.escape-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--red);
+  box-shadow:0 0 10px var(--red);animation:dotBlink 1s ease-in-out infinite;}
+@keyframes dotBlink{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+.credit-line{display:inline-flex;flex-direction:column;align-items:center;gap:2px;
+  margin:6px auto 4px;padding:8px 16px;
+  background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(56,189,248,.08),rgba(236,72,153,.08));
+  border:1.5px solid rgba(168,85,247,.3);border-radius:12px;
+  font-size:.7rem;line-height:1.4;text-align:center;max-width:92%;}
+.credit-line .label{font-size:.6rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+  background:linear-gradient(90deg,var(--green-deep),var(--violet-deep),var(--pink-deep));
+  -webkit-background-clip:text;background-clip:text;color:transparent;}
+.credit-line .name{font-family:'Fredoka',sans-serif;font-weight:700;font-size:.92rem;
+  color:var(--violet-deep);letter-spacing:.3px;}
+.credit-line .sub{font-size:.65rem;font-weight:700;color:var(--gold-deep);letter-spacing:.5px;}
+
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:16px 22px;
+  border-radius:18px;font-weight:800;font-size:.98rem;
+  transition:transform .18s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;position:relative;overflow:hidden;}
+.btn:active{transform:scale(.96);}
+.btn-primary{background:linear-gradient(135deg,var(--violet),var(--violet-deep));color:#fff;
+  box-shadow:0 8px 22px rgba(124,58,237,.4),inset 0 2px 0 rgba(255,255,255,.3);}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(124,58,237,.55);}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-deep));color:#3d1a00;
+  box-shadow:0 8px 22px rgba(251,191,36,.5),inset 0 2px 0 rgba(255,255,255,.5);}
+.btn-gold:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(251,191,36,.65);}
+.btn-pink{background:linear-gradient(135deg,var(--pink),var(--pink-deep));color:#fff;
+  box-shadow:0 8px 22px rgba(236,72,153,.4),inset 0 2px 0 rgba(255,255,255,.3);}
+.btn-pink:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(236,72,153,.55);}
+.btn-mint{background:linear-gradient(135deg,var(--green),var(--green-deep));color:#fff;
+  box-shadow:0 8px 22px rgba(22,163,74,.4),inset 0 2px 0 rgba(255,255,255,.3);}
+.btn-mint:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(22,163,74,.55);}
+.btn-sky{background:linear-gradient(135deg,var(--sky),var(--sky-deep));color:#fff;
+  box-shadow:0 8px 22px rgba(14,165,233,.4),inset 0 2px 0 rgba(255,255,255,.3);}
+.btn-sky:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(14,165,233,.55);}
+.btn-ghost{background:rgba(168,85,247,.08);border:2px solid var(--glass-brd);color:var(--violet-deep);}
+.btn-ghost:hover{background:rgba(168,85,247,.15);border-color:var(--violet);}
+.btn-link{background:none;color:var(--violet-deep);font-size:.85rem;text-decoration:underline;
+  text-underline-offset:3px;padding:6px;transition:color .15s;font-weight:700;}
+.btn-link:hover{color:var(--pink-deep);}
+.btn-sm{padding:11px 18px;font-size:.82rem;border-radius:14px;width:auto;}
+
+.field{display:flex;flex-direction:column;gap:6px;}
+.field label{font-size:.72rem;font-weight:800;color:var(--ink-soft);letter-spacing:1.5px;
+  text-transform:uppercase;padding-left:4px;}
+.field input{width:100%;padding:15px 18px;border-radius:16px;border:2px solid var(--glass-brd);
+  background:var(--white);color:var(--ink);font-size:.98rem;outline:none;
+  transition:border-color .18s,box-shadow .18s;box-shadow:inset 0 1px 3px rgba(168,85,247,.08);}
+.field input::placeholder{color:var(--ink-faint);}
+.field input:focus{border-color:var(--violet);
+  box-shadow:0 0 0 4px rgba(168,85,247,.15),0 0 20px rgba(168,85,247,.2);}
+.field input.center{text-align:center;letter-spacing:4px;font-weight:800;text-transform:uppercase;}
+
+/* ============================================================
+   PINTU KAYU USANG (HOME)
+============================================================ */
+.door-scene{position:relative;height:380px;margin:8px auto 16px;width:340px;
+  perspective:1400px;transform-style:preserve-3d;}
+.door-stage{position:absolute;inset:0;transform-style:preserve-3d;
+  animation:doorFloat 10s ease-in-out infinite;}
+@keyframes doorFloat{
+  0%,100%{transform:rotateY(-4deg) rotateX(1deg);}
+  50%{transform:rotateY(4deg) rotateX(-1deg);}
+}
+.floor{position:absolute;bottom:0;left:-10%;right:-10%;height:60px;
+  background:linear-gradient(180deg,#7c5a3a 0%,#5c4028 40%,#3a2810 100%);
+  border-radius:8px 8px 0 0;
+  box-shadow:0 -4px 20px rgba(0,0,0,.4),inset 0 4px 8px rgba(255,255,255,.1);
+  transform:translateZ(-30px);overflow:hidden;}
+.floor::before{content:'';position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(90deg,transparent 0,transparent 30px,rgba(0,0,0,.15) 30px,rgba(0,0,0,.15) 32px),
+    repeating-linear-gradient(0deg,transparent 0,transparent 18px,rgba(0,0,0,.1) 18px,rgba(0,0,0,.1) 20px);}
+.doorway{position:absolute;top:40px;left:50%;transform:translateX(-50%) translateZ(-20px);
+  width:220px;height:300px;border-radius:8px 8px 0 0;
+  background:linear-gradient(180deg,var(--wood-darker),#1a0f08);
+  box-shadow:inset 0 0 60px rgba(0,0,0,.8),0 10px 40px rgba(0,0,0,.5);overflow:hidden;}
+.maze{position:absolute;inset:8px;border-radius:6px;overflow:hidden;
+  background:linear-gradient(180deg,rgba(26,11,61,.9),rgba(91,33,182,.6));}
+.maze svg{width:100%;height:100%;display:block;}
+.maze .hedge{fill:#15803d;filter:drop-shadow(0 2px 4px rgba(0,0,0,.6));}
+.maze .hedge-light{fill:#22c55e;}
+.maze .path{fill:none;stroke:rgba(251,191,36,.4);stroke-width:1;stroke-dasharray:3 3;}
+.maze .glow{filter:drop-shadow(0 0 6px rgba(251,191,36,.9));}
+.door-main{position:absolute;top:40px;left:50%;transform:translateX(-50%) translateZ(5px);
+  width:220px;height:300px;border-radius:8px 8px 0 0;
+  transform-origin:left center;animation:doorCreak 6s ease-in-out infinite;
+  box-shadow:0 20px 50px rgba(0,0,0,.6),inset 0 0 40px rgba(0,0,0,.3);overflow:hidden;}
+@keyframes doorCreak{
+  0%,100%{transform:translateX(-50%) translateZ(5px) rotateY(0deg);}
+  50%{transform:translateX(-50%) translateZ(5px) rotateY(-22deg);}
+}
+.wood-planks{position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(90deg,
+      var(--wood) 0px, var(--wood) 26px,
+      var(--wood-dark) 26px, var(--wood-dark) 28px,
+      var(--wood) 28px, var(--wood) 54px,
+      var(--wood-light) 54px, var(--wood-light) 56px,
+      var(--wood) 56px, var(--wood) 82px,
+      var(--wood-dark) 82px, var(--wood-dark) 84px,
+      var(--wood) 84px, var(--wood) 110px);
+  box-shadow:inset 0 0 60px rgba(0,0,0,.4),inset 0 0 20px rgba(0,0,0,.5);}
+.wood-grain{position:absolute;inset:0;opacity:.35;mix-blend-mode:multiply;
+  background-image:
+    repeating-linear-gradient(88deg,rgba(0,0,0,.1) 0,rgba(0,0,0,.1) 1px,transparent 1px,transparent 4px),
+    repeating-linear-gradient(92deg,rgba(0,0,0,.08) 0,rgba(0,0,0,.08) 1px,transparent 1px,transparent 6px);}
+.wood-cracks{position:absolute;inset:0;
+  background-image:
+    linear-gradient(93deg,transparent 0,transparent 60%,rgba(0,0,0,.5) 60%,rgba(0,0,0,.5) 60.5%,transparent 60.5%),
+    linear-gradient(88deg,transparent 0,transparent 30%,rgba(0,0,0,.4) 30%,rgba(0,0,0,.4) 30.3%,transparent 30.3%),
+    linear-gradient(94deg,transparent 0,transparent 75%,rgba(0,0,0,.35) 75%,rgba(0,0,0,.35) 75.4%,transparent 75.4%);
+  opacity:.6;}
+.wood-planks::after{content:'';position:absolute;inset:0;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.12) 0%,transparent 5%,transparent 95%,rgba(0,0,0,.3) 100%),
+    linear-gradient(90deg,rgba(0,0,0,.3) 0%,transparent 3%,transparent 97%,rgba(0,0,0,.3) 100%);
+  pointer-events:none;}
+.hinge{position:absolute;width:22px;height:32px;border-radius:3px;
+  background:linear-gradient(180deg,#8b7355,#4a3823);
+  box-shadow:inset 0 2px 3px rgba(255,255,255,.15),inset 0 -2px 4px rgba(0,0,0,.5),0 2px 4px rgba(0,0,0,.4);
+  z-index:5;}
+.hinge::before,.hinge::after{content:'';position:absolute;left:50%;transform:translateX(-50%);
+  width:6px;height:6px;border-radius:50%;
+  background:radial-gradient(circle,#b8956a,#2e1f0e);box-shadow:0 0 3px rgba(0,0,0,.5);}
+.hinge::before{top:4px;}.hinge::after{bottom:4px;}
+.hinge.top{top:20px;left:-8px;}
+.hinge.mid{top:140px;left:-8px;}
+.hinge.bot{top:260px;left:-8px;}
+.door-handle{position:absolute;top:55%;right:22px;
+  width:22px;height:22px;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%,#d4b88a,#8b7355 50%,#2e1f0e);
+  box-shadow:0 0 8px rgba(0,0,0,.7),inset 0 0 4px rgba(255,255,255,.3);z-index:6;}
+.door-handle::after{content:'';position:absolute;top:50%;left:-8px;transform:translateY(-50%);
+  width:14px;height:4px;border-radius:2px;
+  background:linear-gradient(180deg,#d4b88a,#5c4028);box-shadow:0 1px 3px rgba(0,0,0,.5);}
+.keyhole{position:absolute;top:65%;right:30px;width:6px;height:14px;
+  background:#0a0505;border-radius:50% 50% 0 0;
+  box-shadow:inset 0 0 3px rgba(0,0,0,.9),0 0 0 2px rgba(212,184,138,.4);z-index:6;}
+.keyhole::after{content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);
+  width:10px;height:6px;background:#0a0505;box-shadow:inset 0 0 3px rgba(0,0,0,.9);}
+.door-plate{position:absolute;top:8px;left:50%;transform:translateX(-50%) translateZ(20px);
+  font-family:'Fredoka',sans-serif;font-weight:700;font-size:.65rem;letter-spacing:3px;
+  color:#3d1a00;
+  background:linear-gradient(180deg,var(--wood-light),var(--wood));
+  border:2px solid var(--wood-darker);
+  padding:6px 16px;border-radius:4px;
+  box-shadow:0 3px 8px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.3),inset 0 -1px 0 rgba(0,0,0,.4);
+  z-index:10;white-space:nowrap;text-shadow:0 1px 0 rgba(255,255,255,.3);}
+.door-plate::before,.door-plate::after{content:'';position:absolute;top:50%;transform:translateY(-50%);
+  width:4px;height:4px;border-radius:50%;
+  background:radial-gradient(circle,#d4b88a,#2e1f0e);box-shadow:0 0 3px rgba(0,0,0,.5);}
+.door-plate::before{left:4px;}.door-plate::after{right:4px;}
+.fallen-plank{position:absolute;width:280px;height:32px;
+  background:repeating-linear-gradient(90deg,var(--wood) 0px,var(--wood) 20px,
+    var(--wood-dark) 20px,var(--wood-dark) 22px,var(--wood-light) 22px,var(--wood-light) 24px,
+    var(--wood) 24px,var(--wood) 46px);
+  border:1px solid var(--wood-darker);border-radius:3px;
+  box-shadow:0 8px 20px rgba(0,0,0,.5),inset 0 2px 0 rgba(255,255,255,.15),inset 0 -2px 0 rgba(0,0,0,.4);
+  z-index:8;transform-origin:center;}
+.fallen-plank::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 0,transparent 40%,rgba(0,0,0,.2) 40%,rgba(0,0,0,.2) 42%,transparent 42%),
+    repeating-linear-gradient(88deg,transparent 0,transparent 3px,rgba(0,0,0,.08) 3px,rgba(0,0,0,.08) 4px);
+  border-radius:3px;}
+.fallen-plank::after{content:'';position:absolute;top:50%;right:20px;transform:translateY(-50%);
+  width:6px;height:6px;border-radius:50%;
+  background:radial-gradient(circle,#b8956a,#2e1f0e);
+  box-shadow:0 0 4px rgba(0,0,0,.7),inset 0 1px 1px rgba(255,255,255,.3);}
+.fallen-plank.p1{bottom:30px;left:-25px;transform:rotate(-18deg);animation:plankSway 5s ease-in-out infinite;}
+.fallen-plank.p2{bottom:100px;right:-30px;transform:rotate(12deg);width:240px;height:28px;animation:plankSway2 6s ease-in-out infinite;}
+@keyframes plankSway{0%,100%{transform:rotate(-18deg);}50%{transform:rotate(-15deg);}}
+@keyframes plankSway2{0%,100%{transform:rotate(12deg);}50%{transform:rotate(15deg);}}
+.vine{position:absolute;width:4px;
+  background:linear-gradient(180deg,var(--vine-light),var(--vine),var(--vine-dark));
+  border-radius:2px;z-index:9;box-shadow:1px 0 2px rgba(0,0,0,.3);
+  transform-origin:top center;animation:vineSway 4s ease-in-out infinite;}
+@keyframes vineSway{0%,100%{transform:rotate(-3deg);}50%{transform:rotate(3deg);}}
+.vine.v1{top:-10px;left:38px;height:180px;}
+.vine.v2{top:-10px;left:78px;height:220px;animation-delay:.5s;}
+.vine.v3{top:-10px;left:130px;height:140px;animation-delay:1s;}
+.vine.v4{top:-10px;left:180px;height:200px;animation-delay:1.5s;}
+.vine.v5{top:-10px;left:220px;height:160px;animation-delay:2s;}
+.vine.v6{top:-10px;left:250px;height:120px;animation-delay:2.5s;}
+.leaf{position:absolute;width:22px;height:16px;
+  background:linear-gradient(135deg,var(--vine-light),var(--vine));
+  border-radius:50% 0 50% 0;
+  box-shadow:inset -2px -2px 3px rgba(0,0,0,.3),inset 2px 2px 3px rgba(255,255,255,.15);
+  z-index:10;transform-origin:center;animation:leafSway 3s ease-in-out infinite;}
+.leaf::before{content:'';position:absolute;top:50%;left:10%;right:10%;height:1px;
+  background:rgba(0,0,0,.25);transform:translateY(-50%);}
+@keyframes leafSway{0%,100%{transform:rotate(-8deg);}50%{transform:rotate(8deg);}}
+.leaf.l1{top:20px;left:26px;transform:rotate(-40deg);}
+.leaf.l2{top:60px;left:70px;transform:rotate(30deg);}
+.leaf.l3{top:100px;left:118px;transform:rotate(-30deg);}
+.leaf.l4{top:40px;left:170px;transform:rotate(40deg);}
+.leaf.l5{top:80px;left:210px;transform:rotate(-45deg);}
+.leaf.l6{top:120px;left:242px;transform:rotate(35deg);}
+.big-leaf{position:absolute;width:50px;height:35px;
+  background:linear-gradient(135deg,var(--vine-light),var(--vine),var(--vine-dark));
+  border-radius:50% 0 50% 0;
+  box-shadow:inset -3px -3px 5px rgba(0,0,0,.35),inset 3px 3px 5px rgba(255,255,255,.2),0 3px 8px rgba(0,0,0,.3);
+  z-index:11;}
+.big-leaf.bl1{top:-15px;left:-20px;transform:rotate(-30deg);}
+.big-leaf.bl2{top:-10px;right:-15px;transform:rotate(50deg) scaleX(-1);}
+.big-leaf.bl3{bottom:20px;left:-25px;transform:rotate(25deg) scale(.9);}
+.big-leaf.bl4{bottom:60px;right:-20px;transform:rotate(-40deg) scale(.85) scaleX(-1);}
+.iraw{position:absolute;top:-30px;left:50%;transform:translateX(-50%) translateZ(30px);
+  width:70px;height:70px;animation:irawGlow 3s ease-in-out infinite;z-index:12;}
+@keyframes irawGlow{0%,100%{filter:drop-shadow(0 0 10px rgba(251,191,36,.7));}50%{filter:drop-shadow(0 0 25px rgba(251,191,36,1));}}
+.iraw svg{width:100%;height:100%;overflow:visible;}
+.door-sparkle{position:absolute;width:10px;height:10px;border-radius:50%;
+  background:radial-gradient(circle,#fff,var(--gold));
+  box-shadow:0 0 20px var(--gold),0 0 40px var(--gold);
+  animation:orbit 8s linear infinite;top:50%;left:50%;z-index:15;}
+.door-sparkle:nth-child(2){animation-duration:10s;animation-delay:-2s;
+  background:radial-gradient(circle,#fff,var(--pink));
+  box-shadow:0 0 20px var(--pink);}
+.door-sparkle:nth-child(3){animation-duration:12s;animation-delay:-4s;
+  background:radial-gradient(circle,#fff,var(--sky));
+  box-shadow:0 0 20px var(--sky);}
+.door-sparkle:nth-child(4){animation-duration:14s;animation-delay:-6s;
+  background:radial-gradient(circle,#fff,var(--green));
+  box-shadow:0 0 20px var(--green);}
+@keyframes orbit{
+  from{transform:rotate(0) translateX(190px) rotate(0) translateZ(40px);}
+  to{transform:rotate(360deg) translateX(190px) rotate(-360deg) translateZ(40px);}
+}
+
+/* DASHBOARD */
+.dash-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;}
+.join-grid{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;margin:14px 0;}
+@media(max-width:540px){.join-grid{grid-template-columns:1fr;justify-items:center;}}
+.session-info{background:linear-gradient(135deg,var(--green-pale),var(--sky-pale),var(--pink-pale));
+  border:2px solid var(--glass-brd);border-radius:18px;padding:16px;text-align:left;width:100%;}
+.session-info small{color:var(--ink-dim);font-size:.7rem;text-transform:uppercase;
+  letter-spacing:2px;font-weight:700;display:block;margin-bottom:4px;}
+.session-info strong{font-family:'Fredoka',sans-serif;font-size:1.8rem;letter-spacing:6px;
+  background:linear-gradient(135deg,var(--violet-deep),var(--pink-deep));
+  -webkit-background-clip:text;background-clip:text;color:transparent;display:block;margin-bottom:6px;}
+.session-info .student-code{font-size:.85rem;color:var(--ink-soft);font-weight:700;}
+.session-info .student-code b{color:var(--gold-deep);}
+.qr-box{background:var(--white);border:3px solid var(--violet);border-radius:18px;padding:14px;
+  box-shadow:0 0 30px rgba(168,85,247,.3);display:flex;flex-direction:column;align-items:center;gap:8px;}
+.qr-canvas-wrap{display:flex;align-items:center;justify-content:center;min-height:180px;min-width:180px;}
+#qr-canvas{display:block;border-radius:6px;background:#fff;}
+.qr-label{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--violet-deep);text-align:center;}
+.qr-sub{font-size:.6rem;color:var(--ink-faint);font-weight:600;text-align:center;line-height:1.3;word-break:break-all;max-width:200px;}
+.live-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:99px;
+  background:rgba(34,197,94,.15);border:2px solid var(--green);font-size:.68rem;font-weight:800;
+  color:var(--green-deep);text-transform:uppercase;letter-spacing:1px;}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 10px var(--green);animation:livePulse 1.5s ease-in-out infinite;}
+@keyframes livePulse{0%,100%{opacity:.6;transform:scale(.9);}50%{opacity:1;transform:scale(1.2);}}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-top:14px;}
+.stat{background:linear-gradient(135deg,var(--violet-pale),var(--pink-pale));
+  border:2px solid var(--glass-brd);border-radius:16px;padding:14px 10px;text-align:center;}
+.stat:nth-child(1){background:linear-gradient(135deg,var(--green-pale),var(--sky-pale));}
+.stat:nth-child(2){background:linear-gradient(135deg,var(--violet-pale),var(--pink-pale));}
+.stat:nth-child(3){background:linear-gradient(135deg,var(--gold-pale),var(--yellow));}
+.stat:nth-child(4){background:linear-gradient(135deg,var(--pink-pale),var(--violet-pale));}
+.stat:nth-child(5){background:linear-gradient(135deg,var(--sky-pale),var(--green-pale));}
+.stat-num{font-family:'Fredoka',sans-serif;font-size:1.9rem;font-weight:700;
+  background:linear-gradient(135deg,var(--violet-deep),var(--pink-deep));
+  -webkit-background-clip:text;background-clip:text;color:transparent;}
+.stat-lbl{font-size:.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--ink-dim);
+  margin-top:4px;font-weight:700;}
+.table-wrap{max-height:50vh;overflow:auto;border-radius:16px;border:2px solid var(--glass-brd);
+  background:var(--white);margin-top:14px;box-shadow:var(--shadow-md);}
+table{width:100%;border-collapse:collapse;font-size:.78rem;}
+thead{position:sticky;top:0;z-index:2;}
+thead th{background:linear-gradient(180deg,var(--violet),var(--violet-deep));
+  padding:11px 8px;text-align:left;font-size:.66rem;text-transform:uppercase;
+  letter-spacing:1px;color:#fff;white-space:nowrap;font-weight:800;}
+tbody td{padding:10px 8px;border-top:1px solid var(--violet-pale);vertical-align:middle;}
+tbody tr:hover{background:var(--gold-pale);}
+.empty-cell{text-align:center;color:var(--ink-faint);padding:30px 12px;font-style:italic;}
+.status-done{color:var(--green-deep);font-weight:800;}
+.status-playing{color:var(--pink-deep);font-weight:800;}
+.lvl-bar{display:flex;gap:3px;justify-content:flex-start;}
+.lvl-bar .seg{width:14px;height:8px;border-radius:2px;background:var(--violet-pale);border:1px solid var(--violet);}
+.lvl-bar .seg.done{background:linear-gradient(90deg,var(--green),var(--sky));
+  border-color:var(--green-deep);box-shadow:0 0 4px rgba(34,197,94,.5);}
+.lb-section{margin-top:20px;}
+.lb-title{display:flex;align-items:center;gap:8px;font-family:'Fredoka',sans-serif;
+  font-weight:700;font-size:1rem;
+  background:linear-gradient(90deg,var(--violet-deep),var(--pink-deep));
+  -webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px;}
+.lb-title .icon{font-size:1.3rem;-webkit-text-fill-color:initial;color:initial;}
+.lb-list{display:flex;flex-direction:column;gap:8px;}
+.lb-item{display:grid;grid-template-columns:36px 1fr auto;gap:10px;align-items:center;
+  padding:12px 14px;border-radius:14px;background:var(--white);
+  border:2px solid var(--glass-brd);box-shadow:var(--shadow-md);transition:transform .2s,box-shadow .2s;}
+.lb-item:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);}
+.lb-item.rank-1{border-color:var(--gold);background:linear-gradient(135deg,var(--gold-pale),var(--white));}
+.lb-item.rank-2{border-color:#cbd5e1;background:linear-gradient(135deg,#f1f5f9,var(--white));}
+.lb-item.rank-3{border-color:#fdba74;background:linear-gradient(135deg,#ffedd5,var(--white));}
+.lb-rank{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.2rem;color:var(--violet-deep);
+  text-align:center;width:36px;height:36px;border-radius:50%;background:var(--violet-pale);
+  display:flex;align-items:center;justify-content:center;}
+.lb-item.rank-1 .lb-rank{background:var(--gold);color:#3d1a00;}
+.lb-item.rank-2 .lb-rank{background:#cbd5e1;color:#334155;}
+.lb-item.rank-3 .lb-rank{background:#fdba74;color:#7c2d12;}
+.lb-name{font-weight:800;font-size:.85rem;color:var(--ink);margin-bottom:2px;}
+.lb-name small{color:var(--ink-dim);font-weight:600;font-size:.72rem;}
+.lb-detail{font-size:.68rem;color:var(--ink-dim);font-weight:600;display:flex;gap:8px;flex-wrap:wrap;}
+.lb-detail span{display:inline-flex;align-items:center;gap:3px;}
+.lb-score{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.3rem;
+  background:linear-gradient(135deg,var(--violet-deep),var(--pink-deep));
+  -webkit-background-clip:text;background-clip:text;color:transparent;text-align:right;}
+.lb-score small{display:block;font-family:'Inter',sans-serif;font-size:.6rem;
+  color:var(--ink-faint);font-weight:600;background:none;-webkit-text-fill-color:var(--ink-faint);}
+.groups-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:12px;}
+.group-card{border-radius:18px;padding:16px;position:relative;overflow:hidden;border:2px solid;}
+.group-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;}
+.group-master{background:linear-gradient(135deg,var(--gold-pale),#fffef5);border-color:var(--gold);}
+.group-master::before{background:linear-gradient(90deg,var(--gold),var(--gold-deep),var(--gold));}
+.group-breaker{background:linear-gradient(135deg,var(--violet-pale),#faf5ff);border-color:var(--violet);}
+.group-breaker::before{background:linear-gradient(90deg,var(--violet),var(--violet-deep),var(--violet));}
+.group-novice{background:linear-gradient(135deg,var(--sky-pale),#eff6ff);border-color:var(--sky);}
+.group-novice::before{background:linear-gradient(90deg,var(--sky),var(--sky-deep),var(--sky));}
+.group-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.group-icon{font-size:1.5rem;}
+.group-name{font-family:'Fredoka',sans-serif;font-weight:700;font-size:.95rem;}
+.group-master .group-name{color:var(--gold-deep);}
+.group-breaker .group-name{color:var(--violet-deep);}
+.group-novice .group-name{color:var(--sky-deep);}
+.group-count{margin-left:auto;font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.2rem;
+  padding:2px 10px;border-radius:99px;background:rgba(255,255,255,.7);}
+.group-master .group-count{color:var(--gold-deep);}
+.group-breaker .group-count{color:var(--violet-deep);}
+.group-novice .group-count{color:var(--sky-deep);}
+.group-desc{font-size:.7rem;color:var(--ink-dim);line-height:1.4;margin-bottom:8px;font-weight:600;}
+.group-members{display:flex;flex-direction:column;gap:4px;}
+.group-member{font-size:.75rem;color:var(--ink-soft);font-weight:700;padding:5px 8px;
+  border-radius:8px;background:rgba(255,255,255,.7);display:flex;justify-content:space-between;}
+.group-member .pts{color:var(--ink-faint);font-weight:600;}
+.group-empty{font-size:.72rem;color:var(--ink-faint);font-style:italic;text-align:center;
+  padding:12px;background:rgba(255,255,255,.5);border-radius:8px;}
+
+/* GAME SHELL */
+.game-shell{position:relative;z-index:10;display:none;min-height:100vh;padding-bottom:24px;}
+.game-shell.active{display:block;animation:screenIn .45s cubic-bezier(.34,1.56,.64,1) both;}
+.hud{position:sticky;top:0;z-index:20;display:flex;gap:8px;padding:12px 14px;flex-wrap:wrap;justify-content:center;
+  background:rgba(255,251,240,.97);backdrop-filter:blur(20px);
+  border-bottom:3px solid transparent;
+  border-image:linear-gradient(90deg,var(--red),var(--pink),var(--violet),var(--sky),var(--green),var(--yellow),var(--gold)) 1;
+  box-shadow:0 4px 20px rgba(168,85,247,.15);}
+.hud-pill{background:linear-gradient(135deg,var(--violet-pale),var(--pink-pale));
+  border:2px solid var(--glass-brd);border-radius:99px;padding:7px 15px;
+  font-size:.78rem;font-weight:800;display:flex;align-items:center;gap:6px;color:var(--ink);}
+.hud-pill:nth-child(1){background:linear-gradient(135deg,var(--green-pale),var(--sky-pale));}
+.hud-pill:nth-child(2){background:linear-gradient(135deg,var(--gold-pale),var(--yellow));}
+.hud-pill:nth-child(3){background:linear-gradient(135deg,var(--pink-pale),var(--violet-pale));}
+.hud-pill:nth-child(4){background:linear-gradient(135deg,var(--sky-pale),var(--green-pale));}
+.hud-pill:nth-child(5){background:linear-gradient(135deg,var(--violet-pale),var(--gold-pale));}
+.hud-pill b{background:linear-gradient(135deg,var(--violet-deep),var(--pink-deep));
+  -webkit-background-clip:text;background-clip:text;color:transparent;font-weight:900;}
+.escape-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:10px 14px;margin:12px auto 0;max-width:720px;
+  background:linear-gradient(135deg,rgba(239,68,68,.12),rgba(251,191,36,.12),rgba(236,72,153,.12));
+  border:2px solid rgba(239,68,68,.4);border-radius:14px;
+  font-size:.72rem;font-weight:800;}
+.escape-bar .left{display:flex;align-items:center;gap:8px;color:var(--red);}
+.escape-bar .right{display:flex;align-items:center;gap:8px;color:var(--ink-soft);}
+.escape-bar .lock-icon{font-size:1rem;animation:lockShake 3s ease-in-out infinite;}
+@keyframes lockShake{
+  0%,100%{transform:rotate(0);}5%{transform:rotate(-8deg);}10%{transform:rotate(8deg);}
+  15%{transform:rotate(-8deg);}20%{transform:rotate(0);}
+}
+.escape-bar .progress-lock{display:flex;gap:4px;}
+.escape-bar .progress-lock .seg{width:18px;height:10px;border-radius:3px;
+  background:rgba(239,68,68,.3);border:1px solid var(--red);}
+.escape-bar .progress-lock .seg.done{background:linear-gradient(90deg,var(--green),var(--sky));
+  border-color:var(--green-deep);box-shadow:0 0 8px rgba(34,197,94,.7);}
+.game-body{display:flex;flex-direction:column;gap:14px;padding:16px 14px 24px;max-width:720px;margin:0 auto;position:relative;}
+.mission-paper{position:relative;width:100%;
+  background:linear-gradient(135deg,#fffef5,#fffbf0 50%,#fef3c7);
+  border-radius:16px;padding:24px 26px 24px 36px;
+  box-shadow:0 16px 40px rgba(168,85,247,.18),0 0 0 3px var(--gold),
+    0 0 40px rgba(251,191,36,.25),inset 0 0 0 4px #fff;
+  color:var(--ink);transform:rotate(-.8deg);
+  animation:paperIn .6s cubic-bezier(.34,1.56,.64,1) both;overflow:hidden;}
+@keyframes paperIn{from{opacity:0;transform:rotate(-8deg) scale(.85);}to{opacity:1;transform:rotate(-.8deg) scale(1);}}
+.mission-paper .watermark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-25deg);
+  font-family:'Fredoka',sans-serif;font-weight:900;font-size:3.5rem;
+  color:rgba(239,68,68,.06);letter-spacing:8px;pointer-events:none;white-space:nowrap;z-index:0;}
+.mission-paper::before{content:'';position:absolute;top:-10px;left:50%;transform:translateX(-50%) rotate(-3deg);
+  width:90px;height:24px;background:linear-gradient(135deg,var(--pink),var(--violet));
+  border-radius:3px;box-shadow:0 3px 10px rgba(124,58,237,.4),inset 0 1px 0 rgba(255,255,255,.4);z-index:2;}
+.mission-paper::after{content:'';position:absolute;inset:8px;border-radius:10px;pointer-events:none;
+  background:linear-gradient(90deg,rgba(168,85,247,.07) 1px,transparent 1px) 0 0/28px 28px,
+    linear-gradient(rgba(168,85,247,.07) 1px,transparent 1px) 0 0/28px 28px;
+  mask-image:radial-gradient(ellipse at center,black 60%,transparent 100%);}
+.paper-header{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:14px;
+  flex-wrap:wrap;position:relative;z-index:1;}
+.paper-badge{display:inline-flex;align-items:center;gap:6px;font-family:'Fredoka',sans-serif;
+  font-weight:700;font-size:.72rem;letter-spacing:1px;padding:6px 14px;border-radius:99px;color:#fff;
+  background:linear-gradient(135deg,var(--red),var(--pink));
+  box-shadow:0 3px 10px rgba(239,68,68,.4),inset 0 1px 0 rgba(255,255,255,.6);}
+.paper-level{font-family:'Fredoka',sans-serif;font-weight:700;font-size:.78rem;
+  background:linear-gradient(135deg,var(--violet-deep),var(--pink-deep));
+  -webkit-background-clip:text;background-clip:text;color:transparent;}
+.paper-title{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.2rem;
+  background:linear-gradient(135deg,var(--violet-deep),var(--pink-deep),var(--sky-deep));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  margin-bottom:4px;line-height:1.15;position:relative;z-index:1;}
+.paper-theme{font-size:.72rem;color:var(--gold-deep);font-weight:800;text-transform:uppercase;
+  letter-spacing:2px;margin-bottom:14px;position:relative;z-index:1;}
+.paper-story{font-size:.85rem;line-height:1.6;color:var(--ink-soft);padding:12px 14px;
+  background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(56,189,248,.08));
+  border-left:4px solid var(--green);border-radius:10px;margin-bottom:16px;position:relative;z-index:1;}
+.paper-story b{color:var(--green-deep);font-weight:800;}
+.paper-quote{font-size:.92rem;line-height:1.6;color:var(--ink);padding:16px 18px;
+  background:linear-gradient(135deg,rgba(251,191,36,.25),rgba(253,224,71,.25),rgba(236,72,153,.1));
+  border:2px dashed var(--gold-deep);border-radius:12px;margin-bottom:8px;
+  font-style:italic;position:relative;z-index:1;}
+.paper-quote::before{content:'"';position:absolute;top:-10px;left:10px;font-family:'Fredoka',sans-serif;
+  font-size:3rem;color:var(--gold-deep);line-height:1;}
+.paper-source{font-size:.72rem;color:var(--violet-deep);font-weight:700;font-style:normal;
+  text-align:right;margin-bottom:14px;padding-right:6px;position:relative;z-index:1;letter-spacing:.3px;}
+.paper-source::before{content:'— ';color:var(--gold-deep);}
+.paper-q{font-size:.95rem;font-weight:800;line-height:1.45;color:var(--ink);
+  margin-bottom:4px;position:relative;z-index:1;}
+.card-stage{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:6px 4px;}
+.uno-card{position:relative;min-height:140px;border-radius:20px;padding:16px 14px 14px;
+  display:flex;flex-direction:column;justify-content:space-between;text-align:center;
+  font-weight:700;font-size:.82rem;line-height:1.35;color:#1a0d2e;cursor:pointer;border:3px solid #fff;
+  transition:transform .28s cubic-bezier(.34,1.56,.64,1),box-shadow .28s,filter .28s;
+  box-shadow:0 8px 20px rgba(168,85,247,.2),inset 0 -8px 0 rgba(0,0,0,.1),inset 0 3px 0 rgba(255,255,255,.7);
+  overflow:hidden;transform:translateY(0) rotate(0);}
+.uno-card::before{content:'';position:absolute;inset:8px;border-radius:14px;
+  border:3px solid rgba(255,255,255,.7);pointer-events:none;}
+.uno-card::after{content:'';position:absolute;right:-40px;top:-40px;width:120px;height:120px;
+  border-radius:50%;background:rgba(255,255,255,.3);pointer-events:none;}
+.uno-card:hover:not(:disabled){transform:translateY(-8px) rotate(-2deg) scale(1.02);
+  box-shadow:0 18px 40px rgba(168,85,247,.35),inset 0 -8px 0 rgba(0,0,0,.1),inset 0 3px 0 rgba(255,255,255,.7);}
+.uno-card:active:not(:disabled){transform:translateY(-2px) scale(.98);}
+.uno-card:disabled{cursor:default;}
+.uno-card.m-hiperbola{background:linear-gradient(135deg,#fef08a,#eab308);}
+.uno-card.m-metafora{background:linear-gradient(135deg,#7dd3fc,#0284c7);}
+.uno-card.m-personifikasi{background:linear-gradient(135deg,#d8b4fe,#7c3aed);}
+.uno-card.m-simile{background:linear-gradient(135deg,#fbcfe8,#db2777);}
+.uno-card.m-ironi{background:linear-gradient(135deg,#86efac,#16a34a);}
+.uno-card .majas-name{position:relative;z-index:2;font-family:'Fredoka',sans-serif;font-weight:700;
+  font-size:1.15rem;color:#1a0d2e;line-height:1.1;text-shadow:0 2px 0 rgba(255,255,255,.45);
+  margin-top:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;}
+.uno-card .majas-desc{position:relative;z-index:2;font-size:.7rem;font-weight:700;color:#1a0d2e;
+  opacity:.75;margin-top:6px;line-height:1.3;text-shadow:0 1px 0 rgba(255,255,255,.4);}
+.uno-card .card-pick{position:relative;z-index:2;font-size:.65rem;font-weight:800;text-transform:uppercase;
+  letter-spacing:1.5px;color:#1a0d2e;opacity:.6;margin-top:8px;}
+.uno-card.correct{animation:cardCorrect .7s cubic-bezier(.34,1.56,.64,1) forwards;
+  box-shadow:0 0 0 5px var(--green),0 0 60px var(--green),0 20px 44px rgba(0,0,0,.3);
+  z-index:3;border-color:var(--green);}
+@keyframes cardCorrect{
+  0%{transform:translateY(-2px) scale(.98);}
+  40%{transform:translateY(-16px) scale(1.1) rotate(4deg);}
+  100%{transform:translateY(-8px) scale(1.04) rotate(-1deg);}
+}
+.uno-card.wrong{animation:cardWrong .6s cubic-bezier(.36,.07,.19,.97) forwards;
+  filter:grayscale(.7) brightness(.7);box-shadow:0 0 0 4px var(--red),0 0 30px rgba(239,68,68,.6);}
+@keyframes cardWrong{
+  0%,100%{transform:translateX(0) rotate(0);}
+  20%{transform:translateX(-8px) rotate(-4deg);}
+  40%{transform:translateX(8px) rotate(4deg);}
+  60%{transform:translateX(-5px) rotate(-2deg);}
+  80%{transform:translateX(5px) rotate(2deg);}
+}
+.uno-card.dim{opacity:.4;filter:grayscale(.5);}
+.code-collector{background:linear-gradient(135deg,var(--violet-pale),var(--pink-pale),var(--sky-pale));
+  border:3px solid var(--violet);border-radius:20px;padding:16px;
+  box-shadow:0 0 30px rgba(168,85,247,.2),inset 0 2px 0 rgba(255,255,255,.7);
+  display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden;}
+.code-collector::before{content:'SAFE';position:absolute;top:8px;right:12px;
+  font-family:'Fredoka',sans-serif;font-weight:900;font-size:.65rem;letter-spacing:2px;
+  color:rgba(239,68,68,.4);animation:safeBlink 2s ease-in-out infinite;}
+@keyframes safeBlink{0%,100%{opacity:.3;}50%{opacity:.7;}}
+.code-collector.unlocked{border-color:var(--green);}
+.code-collector.unlocked::before{content:'OPEN';color:rgba(34,197,94,.7);animation:none;}
+.code-header{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;position:relative;z-index:1;}
+.code-title{font-size:.78rem;font-weight:800;letter-spacing:1.5px;
+  background:linear-gradient(90deg,var(--pink-deep),var(--violet-deep),var(--sky-deep));
+  -webkit-background-clip:text;background-clip:text;color:transparent;text-transform:uppercase;}
+.code-progress{font-size:.72rem;font-weight:800;color:var(--ink-soft);}
+.code-slots{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+.code-slot{width:40px;height:50px;border-radius:12px;border:3px dashed rgba(168,85,247,.5);
+  background:rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;
+  font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.4rem;color:var(--violet-deep);
+  transition:all .5s cubic-bezier(.34,1.56,.64,1);}
+.code-slot.filled{border-style:solid;border-color:var(--gold);
+  background:linear-gradient(135deg,var(--gold),var(--yellow));color:#3d1a00;
+  box-shadow:0 0 16px rgba(251,191,36,.7),inset 0 2px 0 rgba(255,255,255,.6);
+  animation:slotFill .55s cubic-bezier(.34,1.56,.64,1);}
+@keyframes slotFill{0%{transform:scale(0) rotate(-180deg);opacity:0;}100%{transform:scale(1) rotate(0);opacity:1;}}
+.code-slot.current{border-color:var(--pink);animation:pulseSlot 1.5s ease-in-out infinite;}
+@keyframes pulseSlot{0%,100%{box-shadow:0 0 0 rgba(236,72,153,.4);}50%{box-shadow:0 0 24px rgba(236,72,153,.7);}}
+.code-input-row{display:flex;gap:8px;align-items:stretch;}
+.code-input{flex:1;padding:12px 14px;border-radius:12px;border:2px solid var(--violet);
+  background:var(--white);color:var(--violet-deep);font-size:1rem;font-weight:800;text-align:center;
+  letter-spacing:6px;text-transform:uppercase;outline:none;min-width:0;}
+.code-input:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(251,191,36,.3);}
+.code-input::placeholder{letter-spacing:2px;font-size:.78rem;font-weight:600;color:var(--ink-faint);}
+.code-submit{padding:12px 20px;border-radius:12px;
+  background:linear-gradient(135deg,var(--green),var(--green-deep));
+  color:#fff;font-weight:900;font-size:.85rem;white-space:nowrap;
+  transition:transform .15s,box-shadow .2s;
+  box-shadow:0 4px 16px rgba(22,163,74,.4),inset 0 2px 0 rgba(255,255,255,.3);}
+.code-submit:hover{transform:scale(1.05);}
+.code-submit:disabled{background:rgba(168,85,247,.15);color:var(--ink-faint);cursor:not-allowed;
+  transform:none;box-shadow:none;}
+.code-msg{font-size:.78rem;font-weight:700;text-align:center;min-height:18px;margin-top:2px;}
+.feedback{padding:14px 16px;border-radius:14px;font-size:.85rem;line-height:1.55;
+  font-weight:600;display:none;border-left:4px solid;}
+.feedback.show{display:block;animation:fadeIn .4s cubic-bezier(.34,1.56,.64,1);}
+.feedback.ok{background:linear-gradient(135deg,rgba(34,197,94,.15),rgba(56,189,248,.1));
+  border-left-color:var(--green);color:var(--green-deep);}
+.feedback.no{background:linear-gradient(135deg,rgba(239,68,68,.15),rgba(236,72,153,.1));
+  border-left-color:var(--red);color:#991b1b;}
+.feedback.help{background:linear-gradient(135deg,rgba(251,191,36,.2),rgba(236,72,153,.1));
+  border-left-color:var(--gold);color:#78350f;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.help-choice{display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:18px;
+  background:linear-gradient(135deg,var(--gold-pale),var(--pink-pale),var(--violet-pale));
+  border:3px solid var(--violet);animation:cardPulse 2s ease-in-out infinite;}
+@keyframes cardPulse{0%,100%{box-shadow:0 0 0 rgba(168,85,247,.3);}50%{box-shadow:0 0 30px rgba(168,85,247,.5);}}
+.help-choice .title-sm{font-size:.85rem;font-weight:800;
+  background:linear-gradient(90deg,var(--violet-deep),var(--pink-deep));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-align:center;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;}
+.help-choice .hint{font-size:.75rem;color:var(--ink-soft);text-align:center;margin-bottom:4px;}
+.next-row{display:flex;justify-content:center;padding:4px 0;}
+.next-row .btn{max-width:340px;}
+.chest{position:relative;width:200px;height:170px;margin:16px auto;perspective:600px;}
+.chest-body{position:absolute;inset:35px 0 0 0;border-radius:8px 8px 16px 16px;
+  background:linear-gradient(180deg,var(--gold),var(--gold-deep) 60%,#7c2d12);
+  border:4px solid var(--violet);
+  box-shadow:inset 0 0 40px rgba(0,0,0,.3),0 16px 50px rgba(251,191,36,.4),
+    0 0 60px rgba(236,72,153,.3);}
+.chest-body::after{content:'★';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-size:2.2rem;color:#fff;text-shadow:0 0 30px var(--gold),0 0 60px var(--gold-deep);}
+.chest-lid{position:absolute;left:-8px;right:-8px;top:0;height:52px;border-radius:36px 36px 8px 8px;
+  background:linear-gradient(90deg,var(--gold),var(--yellow),var(--pink),var(--violet),var(--gold));
+  background-size:200% 100%;
+  animation:lidOpen 3s ease-in-out infinite, rainbowBar 4s linear infinite;
+  border:4px solid var(--violet);
+  box-shadow:inset 0 0 24px rgba(0,0,0,.2),0 0 30px rgba(251,191,36,.5);
+  transform-origin:bottom center;}
+@keyframes lidOpen{0%,100%{transform:rotateX(0);}45%,65%{transform:rotateX(-118deg);}}
+.chest-glow{position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,rgba(251,191,36,.6),rgba(236,72,153,.3),transparent 60%);
+  animation:glowPulse 2s ease-in-out infinite;pointer-events:none;}
+@keyframes glowPulse{0%,100%{opacity:.5;transform:translateX(-50%) scale(.9);}50%{opacity:1;transform:translateX(-50%) scale(1.2);}}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:100;}
+.conf{position:absolute;width:12px;height:16px;opacity:0;animation:fall linear forwards;border-radius:3px;}
+@keyframes fall{0%{opacity:1;transform:translateY(-20vh) rotate(0);}100%{opacity:0;transform:translateY(110vh) rotate(720deg);}}
+.vscore{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:16px 0;}
+.vscore .item{background:linear-gradient(135deg,var(--violet-pale),var(--pink-pale));
+  border:2px solid var(--glass-brd);border-radius:16px;padding:16px;text-align:center;}
+.vscore .item:nth-child(1){background:linear-gradient(135deg,var(--gold-pale),var(--yellow));}
+.vscore .item:nth-child(2){background:linear-gradient(135deg,var(--pink-pale),var(--violet-pale));}
+.vscore .item:nth-child(3){background:linear-gradient(135deg,var(--sky-pale),var(--green-pale));}
+.vscore .item:nth-child(4){background:linear-gradient(135deg,var(--green-pale),var(--sky-pale));}
+.vscore .item b{display:block;font-family:'Fredoka',sans-serif;font-size:2rem;
+  background:linear-gradient(135deg,var(--violet-deep),var(--pink-deep));
+  -webkit-background-clip:text;background-clip:text;color:transparent;}
+.vscore .item span{font-size:.72rem;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--ink-dim);font-weight:700;}
+.note{background:linear-gradient(135deg,var(--gold-pale),var(--pink-pale),var(--violet-pale));
+  border:2px solid var(--gold);border-radius:14px;padding:14px 16px;
+  font-size:.78rem;color:var(--ink-soft);line-height:1.55;}
+.note strong{color:var(--gold-deep);}
+#toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,150%);z-index:9999;
+  background:var(--white);border:2px solid var(--violet);border-radius:16px;
+  padding:14px 22px;font-size:.85rem;font-weight:800;box-shadow:0 20px 50px rgba(168,85,247,.35);
+  max-width:92vw;transition:transform .4s cubic-bezier(.34,1.56,.64,1);color:var(--ink);text-align:center;}
+#toast.show{transform:translate(-50%,0);}
+#toast.ok{border-color:var(--green);color:var(--green-deep);}
+#toast.bad{border-color:var(--red);color:#991b1b;}
+#toast.gold{border-color:var(--gold);color:var(--gold-deep);}
+.hidden{display:none !important;}
+@media (min-width:720px){
+  .card-stage{grid-template-columns:repeat(2,1fr);}
+  .uno-card{min-height:160px;}
+  .uno-card .majas-name{font-size:1.4rem;}
+}
+@media (max-width:520px){
+  .screen{padding:16px 12px;}
+  .card{padding:22px 18px;border-radius:20px;}
+  .title-xl{font-size:clamp(1.6rem,7.5vw,2.2rem);}
+  .door-scene{height:340px;width:300px;transform:scale(.9);}
+  .credit-line{font-size:.65rem;}
+  .credit-line .name{font-size:.85rem;}
+  .session-info strong{font-size:1.5rem;letter-spacing:4px;}
+  .mission-paper{padding:20px 18px 20px 26px;}
+  .mission-paper .watermark{font-size:2.5rem;letter-spacing:5px;}
+  .paper-title{font-size:1.05rem;}
+  .paper-quote{font-size:.84rem;padding:14px 16px;}
+  .paper-source{font-size:.68rem;}
+  .uno-card{min-height:130px;padding:14px 12px 12px;}
+  .uno-card .majas-name{font-size:1.05rem;}
+  .uno-card .majas-desc{font-size:.65rem;}
+  .code-slot{width:34px;height:44px;font-size:1.15rem;}
+  .game-body{padding:14px 12px 24px;}
+  .hud{padding:10px 8px;gap:6px;}
+  .hud-pill{padding:6px 10px;font-size:.68rem;}
+  .escape-bar{padding:8px 10px;font-size:.65rem;}
+  .escape-bar .progress-lock .seg{width:14px;height:8px;}
+  .lb-item{grid-template-columns:32px 1fr auto;padding:10px;}
+  .lb-score{font-size:1.15rem;}
+  .stat-num{font-size:1.6rem;}
+  .fallen-plank{width:240px;height:28px;}
+  .fallen-plank.p2{width:200px;height:24px;}
+}
+
+/* ============================================================
+   ROOM SCENE PER LEVEL — ANIMASI RUANGAN
+============================================================ */
+.room-scene{
+  position:relative;width:100%;max-width:520px;height:360px;margin:0 auto 8px;
+  perspective:1200px;transform-style:preserve-3d;
+  border-radius:20px;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 30%,rgba(251,191,36,.15),transparent 60%),
+    linear-gradient(180deg,#2e1f0e 0%,#4a3218 40%,#1a0f08 100%);
+  box-shadow:0 20px 50px rgba(0,0,0,.5),inset 0 0 80px rgba(0,0,0,.8),
+    0 0 0 3px var(--wood-darker);
+}
+.room-scene::after{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(ellipse at 50% 50%,transparent 40%,rgba(0,0,0,.55) 100%);
+}
+.room-hint{
+  position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
+  z-index:20;font-size:.72rem;font-weight:800;color:#fde68a;
+  background:rgba(26,11,61,.78);padding:8px 16px;border-radius:99px;
+  border:1.5px solid var(--gold);letter-spacing:.5px;
+  animation:hintPulse 2s ease-in-out infinite;white-space:nowrap;
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+}
+@keyframes hintPulse{
+  0%,100%{box-shadow:0 0 0 rgba(251,191,36,.3);opacity:.9;}
+  50%{box-shadow:0 0 24px rgba(251,191,36,.7);opacity:1;}
+}
+
+/* ---------- LEVEL 1 : PINTU KAYU ---------- */
+.room-door{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:200px;height:290px;border-radius:6px 6px 0 0;
+  background:
+    repeating-linear-gradient(90deg,
+      var(--wood) 0,var(--wood) 24px,var(--wood-dark) 24px,var(--wood-dark) 26px,
+      var(--wood) 26px,var(--wood) 50px,var(--wood-light) 50px,var(--wood-light) 52px);
+  border:3px solid var(--wood-darker);
+  box-shadow:inset 0 0 50px rgba(0,0,0,.6),0 10px 30px rgba(0,0,0,.6);
+  transform-origin:left center;cursor:pointer;
+  transition:transform 1.4s cubic-bezier(.34,1.56,.64,1);
+  z-index:3;
+}
+.room-door::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(88deg,rgba(0,0,0,.1) 0,rgba(0,0,0,.1) 1px,transparent 1px,transparent 5px);
+  opacity:.5;pointer-events:none;
+}
+.room-door .rd-handle{
+  position:absolute;top:52%;right:16px;width:18px;height:18px;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%,#d4b88a,#8b7355 50%,#2e1f0e);
+  box-shadow:0 0 8px rgba(0,0,0,.7),inset 0 0 4px rgba(255,255,255,.3);
+}
+.room-door .rd-handle::after{
+  content:'';position:absolute;top:50%;left:-7px;transform:translateY(-50%);
+  width:12px;height:4px;border-radius:2px;background:linear-gradient(180deg,#d4b88a,#5c4028);
+}
+.room-door.opening{
+  transform:translateX(-50%) rotateY(-108deg);
+  box-shadow:0 0 80px rgba(251,191,36,.8);
+}
+.room-door-glow{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:220px;height:290px;border-radius:6px 6px 0 0;
+  background:radial-gradient(ellipse at center,rgba(251,191,36,.9),rgba(251,191,36,.3) 50%,transparent 80%);
+  opacity:0;pointer-events:none;transition:opacity .6s;z-index:2;
+  filter:blur(8px);
+}
+.room-door.opening ~ .room-door-glow{opacity:1;}
+.room-dust{
+  position:absolute;width:4px;height:4px;border-radius:50%;
+  background:rgba(253,224,71,.8);pointer-events:none;opacity:0;z-index:4;
+  animation:dustFloat 2.5s ease-out forwards;
+}
+@keyframes dustFloat{
+  0%{opacity:0;transform:translate(0,0) scale(1);}
+  20%{opacity:1;}
+  100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.3);}
+}
+.room-shelf-side{
+  position:absolute;bottom:0;width:60px;height:200px;
+  background:linear-gradient(180deg,var(--wood),var(--wood-dark));
+  border:2px solid var(--wood-darker);border-radius:4px 4px 0 0;
+  box-shadow:inset 0 0 20px rgba(0,0,0,.6);z-index:1;
+}
+.room-shelf-side.l{left:8px;}
+.room-shelf-side.r{right:8px;}
+
+/* ---------- LEVEL 2 : CERMIN ANTIK ---------- */
+.room-mirror{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:170px;height:230px;cursor:pointer;z-index:5;
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+}
+.room-mirror:hover{transform:translate(-50%,-50%) scale(1.04);}
+.mirror-frame{
+  position:absolute;inset:0;border-radius:85px 85px 12px 12px;
+  background:linear-gradient(135deg,#d4b88a,#8b7355 40%,#4a3823 70%,#d4b88a);
+  box-shadow:0 10px 30px rgba(0,0,0,.6),inset 0 0 20px rgba(0,0,0,.4),
+    0 0 40px rgba(251,191,36,.25);
+  border:2px solid #2e1f0e;
+}
+.mirror-glass{
+  position:absolute;inset:10px;border-radius:75px 75px 6px 6px;
+  background:
+    radial-gradient(ellipse at 30% 20%,rgba(56,189,248,.4),transparent 50%),
+    radial-gradient(ellipse at 70% 80%,rgba(168,85,247,.4),transparent 50%),
+    linear-gradient(160deg,#1e293b,#0f172a 60%,#1e1b4b);
+  box-shadow:inset 0 0 40px rgba(0,0,0,.9),inset 0 0 20px rgba(56,189,248,.3);
+  overflow:hidden;display:flex;align-items:center;justify-content:center;
+}
+.mirror-glass::before{
+  content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.35) 50%,transparent 70%);
+  transform:translateX(-100%) rotate(8deg);
+  pointer-events:none;
+}
+.room-mirror.shining .mirror-glass::before{
+  animation:mirrorShine 1.6s ease-in-out forwards;
+}
+@keyframes mirrorShine{
+  0%{transform:translateX(-100%) rotate(8deg);}
+  100%{transform:translateX(100%) rotate(8deg);}
+}
+.mirror-text{
+  position:relative;z-index:2;font-family:'Fredoka',sans-serif;font-weight:700;
+  font-size:.78rem;color:#fde68a;text-align:center;line-height:1.4;
+  padding:0 14px;text-shadow:0 0 12px rgba(251,191,36,.9);
+  opacity:0;transition:opacity .8s;
+}
+.room-mirror.shining .mirror-text{opacity:1;}
+.mirror-spark{
+  position:absolute;width:6px;height:6px;border-radius:50%;
+  background:#fff;box-shadow:0 0 12px #fde68a,0 0 24px #fbbf24;
+  opacity:0;pointer-events:none;
+}
+.room-mirror.shining .mirror-spark{animation:sparkPop 1.2s ease-out forwards;}
+@keyframes sparkPop{
+  0%{opacity:0;transform:scale(0);}
+  30%{opacity:1;transform:scale(1.4);}
+  100%{opacity:0;transform:scale(.2) translate(var(--sx),var(--sy));}
+}
+.mirror-candle{
+  position:absolute;bottom:-30px;width:14px;height:34px;
+  background:linear-gradient(180deg,#fef3c7,#d97706);
+  border-radius:2px;box-shadow:0 0 20px rgba(251,191,36,.8),inset 0 -3px 0 #92400e;
+  z-index:6;
+}
+.mirror-candle.l{left:-24px;}
+.mirror-candle.r{right:-24px;}
+.mirror-candle::before{
+  content:'';position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+  width:8px;height:14px;border-radius:50% 50% 20% 20%;
+  background:radial-gradient(ellipse at 50% 80%,#fef9c3,#fbbf24 50%,#ea580c);
+  box-shadow:0 0 12px #fbbf24;animation:flameFlicker .3s ease-in-out infinite alternate;
+}
+.mirror-table{
+  position:absolute;bottom:-60px;left:50%;transform:translateX(-50%);
+  width:240px;height:12px;border-radius:4px;
+  background:linear-gradient(180deg,#6b4423,#3d2410);
+  box-shadow:0 6px 20px rgba(0,0,0,.6),inset 0 2px 0 rgba(255,255,255,.2);
+  z-index:4;
+}
+.mirror-table::before,.mirror-table::after{
+  content:'';position:absolute;bottom:-46px;width:8px;height:46px;
+  background:linear-gradient(180deg,#4a2c15,#2e1f0e);
+}
+.mirror-table::before{left:30px;}
+.mirror-table::after{right:30px;}
+
+/* ---------- LEVEL 3 : RAK BUKU ---------- */
+.room-bookshelf{
+  position:absolute;top:6%;left:50%;transform:translateX(-50%);
+  width:300px;height:290px;
+  background:linear-gradient(180deg,var(--wood-light),var(--wood),var(--wood-dark));
+  border:4px solid var(--wood-darker);border-radius:8px;
+  box-shadow:0 16px 40px rgba(0,0,0,.7),inset 0 0 40px rgba(0,0,0,.5),
+    0 0 50px rgba(251,191,36,.2);
+  padding:10px;display:flex;flex-direction:column;gap:6px;
+  z-index:3;
+}
+.rb-shelf{
+  flex:1;display:flex;align-items:flex-end;gap:3px;
+  background:linear-gradient(180deg,rgba(0,0,0,.4),rgba(0,0,0,.65));
+  border-radius:3px;padding:0 6px 4px;position:relative;
+  box-shadow:inset 0 4px 8px rgba(0,0,0,.7);
+}
+.rb-book{
+  width:14px;height:70%;border-radius:2px;cursor:pointer;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s;
+  box-shadow:inset -2px 0 0 rgba(0,0,0,.35),inset 1px 0 0 rgba(255,255,255,.2),0 2px 4px rgba(0,0,0,.5);
+  position:relative;
+}
+.rb-book::before{
+  content:'';position:absolute;top:4px;left:2px;right:2px;height:1px;
+  background:rgba(251,191,36,.5);
+}
+.rb-book.special{
+  box-shadow:0 0 16px rgba(251,191,36,.9),inset -2px 0 0 rgba(0,0,0,.35),
+    inset 1px 0 0 rgba(255,255,255,.3),0 2px 4px rgba(0,0,0,.5);
+  animation:specialBookPulse 1.6s ease-in-out infinite;
+}
+@keyframes specialBookPulse{
+  0%,100%{box-shadow:0 0 12px rgba(251,191,36,.7),inset -2px 0 0 rgba(0,0,0,.35);}
+  50%{box-shadow:0 0 28px rgba(251,191,36,1),inset -2px 0 0 rgba(0,0,0,.35);}
+}
+.rb-book.flying{
+  animation:bookFlyOut 1.6s cubic-bezier(.34,1.56,.64,1) forwards;
+  z-index:50;pointer-events:none;
+}
+@keyframes bookFlyOut{
+  0%{transform:translate(0,0) rotate(0) scale(1);}
+  40%{transform:translate(30px,-80px) rotate(20deg) scale(1.4);}
+  100%{transform:translate(180px,-260px) rotate(720deg) scale(.2);opacity:0;}
+}
+.room-vine-deco{
+  position:absolute;width:4px;border-radius:2px;z-index:5;
+  background:linear-gradient(180deg,var(--vine-light),var(--vine-dark));
+  box-shadow:1px 0 2px rgba(0,0,0,.3);transform-origin:top center;
+  animation:vineSway 4s ease-in-out infinite;
+}
+.room-vine-deco.v1{top:0;left:20px;height:120px;}
+.room-vine-deco.v2{top:0;right:24px;height:160px;animation-delay:.6s;}
+.room-vine-deco.v3{top:0;left:50%;height:90px;animation-delay:1.2s;}
+.room-vine-deco::after{
+  content:'🍃';position:absolute;bottom:-6px;left:-8px;font-size:18px;
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.5));
+}
+
+/* ---------- MISSION REVEAL ---------- */
+@keyframes missionReveal{
+  0%{opacity:0;transform:rotate(-6deg) scale(.7) translateY(30px);filter:blur(6px);}
+  60%{opacity:1;transform:rotate(-.8deg) scale(1.03) translateY(-4px);filter:blur(0);}
+  100%{opacity:1;transform:rotate(-.8deg) scale(1) translateY(0);}
+}
+.mission-paper.reveal{animation:missionReveal .9s cubic-bezier(.34,1.56,.64,1) both;}
+
+/* ---------- LEVEL TRANSITION OVERLAY ---------- */
+.level-transition{
+  position:fixed;inset:0;z-index:9000;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at center,rgba(26,11,61,.95),rgba(10,5,5,.98));
+  opacity:0;pointer-events:none;transition:opacity .5s;
+}
+.level-transition.show{opacity:1;pointer-events:auto;}
+.level-transition .lt-inner{text-align:center;color:#fde68a;animation:ltZoom .8s cubic-bezier(.34,1.56,.64,1);}
+@keyframes ltZoom{from{transform:scale(.5);opacity:0;}to{transform:scale(1);opacity:1;}}
+.lt-badge{font-size:.7rem;letter-spacing:4px;text-transform:uppercase;color:#fbbf24;font-weight:800;margin-bottom:10px;}
+.lt-title{font-family:'Fredoka',sans-serif;font-weight:700;font-size:clamp(1.4rem,5vw,2rem);
+  background:linear-gradient(135deg,#fde68a,#fbbf24,#ec4899,#a855f7);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  margin-bottom:8px;line-height:1.1;padding:0 20px;}
+.lt-sub{font-size:.82rem;color:#c4b5fd;max-width:320px;margin:0 auto;line-height:1.5;padding:0 20px;}
+.lt-icon{font-size:3rem;margin-bottom:10px;display:block;animation:ltIcon 1.2s ease-in-out infinite;}
+@keyframes ltIcon{0%,100%{transform:translateY(0) rotate(-4deg);}50%{transform:translateY(-10px) rotate(4deg);}}
+
+@media (max-width:520px){
+  .room-scene{height:310px;}
+  .room-door{width:170px;height:250px;}
+  .room-door-glow{width:190px;height:250px;}
+  .room-mirror{width:150px;height:200px;}
+  .mirror-table{width:200px;}
+  .room-bookshelf{width:260px;height:250px;}
+  .mirror-candle{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div id="bg">
+  <div id="bokeh-container"></div>
+</div>
+
+<!-- ============================================================
+     PERPUSTAKAAN 3D BACKGROUND
+============================================================ -->
+<div class="library-deco">
+  <div class="library-back-wall"></div>
+  <div class="library-carpet"></div>
+
+  <div class="arched-window">
+    <div class="window-moon"></div>
+  </div>
+  <div class="window-beam"></div>
+
+  <div class="hanging-lamp">
+    <div class="lamp-wire"></div>
+    <div class="lamp-bulb"></div>
+  </div>
+
+  <div class="bookshelf left-top">
+    <div class="shelf-frame">
+      <div class="shelf-row">
+        <div class="book bk-red"></div>
+        <div class="book bk-blue tall"></div>
+        <div class="book bk-green"></div>
+        <div class="book bk-brown thick"></div>
+        <div class="book bk-gold"></div>
+        <div class="book bk-dark tall"></div>
+        <div class="book bk-red short"></div>
+        <div class="book bk-purple"></div>
+        <div class="book bk-teal tall"></div>
+        <div class="book bk-gold short"></div>
+        <div class="book bk-brown"></div>
+        <div class="book bk-blue thick"></div>
+        <div class="book bk-dark"></div>
+        <div class="book bk-red"></div>
+        <div class="book bk-green leaning"></div>
+      </div>
+      <div class="shelf-row">
+        <div class="book bk-teal"></div>
+        <div class="book bk-purple tall"></div>
+        <div class="book bk-red thick"></div>
+        <div class="book bk-gold"></div>
+        <div class="book bk-blue short"></div>
+        <div class="book bk-green"></div>
+        <div class="book bk-brown tall"></div>
+        <div class="book bk-dark"></div>
+        <div class="book bk-pink"></div>
+        <div class="book bk-cream thick"></div>
+        <div class="book bk-red"></div>
+        <div class="book bk-purple leaning-l"></div>
+        <div class="book bk-blue"></div>
+      </div>
+      <div class="shelf-row">
+        <div class="book bk-brown"></div>
+        <div class="book bk-black thick"></div>
+        <div class="book bk-red"></div>
+        <div class="book bk-gold tall"></div>
+        <div class="book bk-blue"></div>
+        <div class="book bk-green thick"></div>
+        <div class="book bk-purple short"></div>
+        <div class="book bk-red tall"></div>
+        <div class="book bk-cream"></div>
+        <div class="book bk-dark"></div>
+        <div class="book bk-teal"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bookshelf right-top">
+    <div class="shelf-frame">
+      <div class="shelf-row">
+        <div class="book bk-gold"></div>
+        <div class="book bk-red tall"></div>
+        <div class="book bk-blue thick"></div>
+        <div class="book bk-purple"></div>
+        <div class="book bk-teal"></div>
+        <div class="book bk-green thick"></div>
+        <div class="book bk-brown"></div>
+        <div class="book bk-dark tall"></div>
+        <div class="book bk-red short"></div>
+        <div class="book bk-cream thick"></div>
+        <div class="book bk-pink"></div>
+        <div class="book bk-blue"></div>
+      </div>
+      <div class="shelf-row">
+        <div class="book bk-blue"></div>
+        <div class="book bk-red thick"></div>
+        <div class="book bk-green"></div>
+        <div class="book bk-gold tall"></div>
+        <div class="book bk-brown"></div>
+        <div class="book bk-purple"></div>
+        <div class="book bk-dark short"></div>
+        <div class="book bk-red thick"></div>
+        <div class="book bk-teal tall"></div>
+        <div class="book bk-cream"></div>
+        <div class="book bk-pink"></div>
+        <div class="book bk-green leaning"></div>
+      </div>
+      <div class="shelf-row">
+        <div class="book bk-purple"></div>
+        <div class="book bk-teal thick"></div>
+        <div class="book bk-red"></div>
+        <div class="book bk-gold short"></div>
+        <div class="book bk-blue tall"></div>
+        <div class="book bk-green"></div>
+        <div class="book bk-brown thick"></div>
+        <div class="book bk-red"></div>
+        <div class="book bk-dark"></div>
+        <div class="book bk-cream tall"></div>
+        <div class="book bk-purple"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flying-book fb1 bk-brown"></div>
+  <div class="flying-book fb2 bk-dark"></div>
+  <div class="flying-book fb3 bk-purple"></div>
+
+  <div class="reading-corner left">
+    <div class="old-chair">
+      <div class="chair-back"></div>
+      <div class="chair-pillow"></div>
+      <div class="chair-seat"></div>
+      <div class="chair-leg l1"></div>
+      <div class="chair-leg l2"></div>
+    </div>
+    <div class="side-table">
+      <div class="table-top"></div>
+      <div class="table-leg l1"></div>
+      <div class="table-leg l2"></div>
+      <div class="desk-lamp">
+        <div class="lamp-glow"></div>
+        <div class="lamp-shade"></div>
+        <div class="lamp-stem"></div>
+        <div class="lamp-base"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="oil-lantern">
+    <div class="lantern-top"></div>
+    <div class="lantern-body">
+      <div class="lantern-flame"></div>
+    </div>
+    <div class="lantern-base"></div>
+  </div>
+</div>
+
+<!-- HOME -->
+<section id="scr-home" class="screen active">
+  <div class="wrap">
+    <div class="door-scene">
+      <div class="door-stage">
+        <div class="floor"></div>
+        <div class="doorway"></div>
+        <div class="maze">
+          <svg viewBox="0 0 220 300" preserveAspectRatio="none">
+            <defs>
+              <radialGradient id="mazeGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="rgba(251,191,36,0.4)"/>
+                <stop offset="100%" stop-color="rgba(26,11,61,0)"/>
+              </radialGradient>
+            </defs>
+            <rect width="220" height="300" fill="url(#mazeGlow)"/>
+            <g class="hedge">
+              <rect x="10" y="20" width="200" height="270" rx="6" opacity="0.95"/>
+              <rect x="20" y="30" width="180" height="250" rx="4" fill="rgba(26,11,61,0.75)" opacity="0.9"/>
+            </g>
+            <g fill="rgba(26,11,61,0.85)">
+              <rect x="26" y="36" width="168" height="238"/>
+            </g>
+            <g class="hedge">
+              <rect x="26" y="36" width="168" height="12" rx="2"/>
+              <rect x="26" y="60" width="40" height="12" rx="2"/>
+              <rect x="120" y="60" width="74" height="12" rx="2"/>
+              <rect x="80" y="84" width="12" height="50" rx="2"/>
+              <rect x="120" y="84" width="12" height="40" rx="2"/>
+              <rect x="160" y="84" width="12" height="60" rx="2"/>
+              <rect x="26" y="120" width="28" height="12" rx="2"/>
+              <rect x="92" y="120" width="50" height="12" rx="2"/>
+              <rect x="176" y="120" width="18" height="12" rx="2"/>
+              <rect x="26" y="144" width="12" height="40" rx="2"/>
+              <rect x="66" y="156" width="38" height="12" rx="2"/>
+              <rect x="130" y="144" width="12" height="30" rx="2"/>
+              <rect x="160" y="156" width="34" height="12" rx="2"/>
+              <rect x="46" y="180" width="28" height="12" rx="2"/>
+              <rect x="100" y="180" width="38" height="12" rx="2"/>
+              <rect x="160" y="180" width="34" height="12" rx="2"/>
+              <rect x="26" y="204" width="12" height="40" rx="2"/>
+              <rect x="66" y="204" width="50" height="12" rx="2"/>
+              <rect x="146" y="204" width="12" height="40" rx="2"/>
+              <rect x="176" y="204" width="18" height="12" rx="2"/>
+              <rect x="90" y="228" width="28" height="10" rx="2"/>
+              <rect x="130" y="216" width="12" height="28" rx="2"/>
+            </g>
+            <g class="hedge-light" opacity="0.5">
+              <rect x="26" y="36" width="168" height="4" rx="1"/>
+              <rect x="80" y="84" width="12" height="4" rx="1"/>
+              <rect x="160" y="84" width="12" height="4" rx="1"/>
+              <rect x="26" y="120" width="28" height="4" rx="1"/>
+              <rect x="92" y="120" width="50" height="4" rx="1"/>
+              <rect x="46" y="180" width="28" height="4" rx="1"/>
+              <rect x="100" y="180" width="38" height="4" rx="1"/>
+            </g>
+            <circle cx="110" cy="240" r="5" fill="#fbbf24" class="glow"/>
+            <circle cx="110" cy="240" r="2.5" fill="#fff"/>
+            <path class="path glow" d="M110,240 L110,220 L92,220 L92,196 L110,196 L110,166 L92,166 L92,140 L110,140 L110,112 L110,88 L130,88 L130,60 L155,60 L155,84 L175,84 L175,110" opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="door-main">
+          <div class="wood-planks"></div>
+          <div class="wood-grain"></div>
+          <div class="wood-cracks"></div>
+          <div class="hinge top"></div>
+          <div class="hinge mid"></div>
+          <div class="hinge bot"></div>
+          <div class="door-handle"></div>
+          <div class="keyhole"></div>
+        </div>
+        <div class="door-plate">ESCAPE ROOM</div>
+        <div class="fallen-plank p1"></div>
+        <div class="fallen-plank p2"></div>
+        <div class="vine v1"></div>
+        <div class="vine v2"></div>
+        <div class="vine v3"></div>
+        <div class="vine v4"></div>
+        <div class="vine v5"></div>
+        <div class="vine v6"></div>
+        <div class="leaf l1"></div>
+        <div class="leaf l2"></div>
+        <div class="leaf l3"></div>
+        <div class="leaf l4"></div>
+        <div class="leaf l5"></div>
+        <div class="leaf l6"></div>
+        <div class="big-leaf bl1"></div>
+        <div class="big-leaf bl2"></div>
+        <div class="big-leaf bl3"></div>
+        <div class="big-leaf bl4"></div>
+        <div class="iraw">
+          <svg viewBox="0 0 76 76">
+            <defs>
+              <radialGradient id="irawGrad" cx="50%" cy="40%" r="60%">
+                <stop offset="0%" stop-color="#fef3c7"/>
+                <stop offset="30%" stop-color="#fde68a"/>
+                <stop offset="60%" stop-color="#fbbf24"/>
+                <stop offset="100%" stop-color="#92400e"/>
+              </radialGradient>
+              <linearGradient id="irawInner" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#dc2626"/>
+                <stop offset="100%" stop-color="#7f1d1d"/>
+              </linearGradient>
+            </defs>
+            <path d="M38,4 L72,20 L72,42 Q72,64 38,74 Q4,64 4,42 L4,20 Z"
+              fill="url(#irawGrad)" stroke="#451a03" stroke-width="2.5"/>
+            <path d="M38,12 L62,24 L62,42 Q62,58 38,66 Q14,58 14,42 L14,24 Z"
+              fill="url(#irawInner)" stroke="#fbbf24" stroke-width="1.5"/>
+            <circle cx="38" cy="36" r="10" fill="#fbbf24" opacity="0.9"/>
+            <path d="M38,26 L42,32 L38,38 L34,32 Z" fill="#7f1d1d"/>
+            <circle cx="38" cy="36" r="3" fill="#fef3c7"/>
+            <path d="M24,50 L38,56 L52,50" stroke="#fde68a" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <circle cx="38" cy="56" r="1.5" fill="#fde68a"/>
+          </svg>
+        </div>
+        <div class="door-sparkle"></div>
+        <div class="door-sparkle"></div>
+        <div class="door-sparkle"></div>
+        <div class="door-sparkle"></div>
+      </div>
+    </div>
+
+    <div class="card card-gold">
+      <p class="eyebrow">Escape Room · Bahasa Indonesia</p>
+      <h1 class="title title-xl" style="margin:10px 0 4px;">MAJAS<br>HUNTER</h1>
+      <p style="color:var(--pink-deep);font-weight:800;letter-spacing:2px;font-size:.78rem;text-transform:uppercase;text-align:center;margin-bottom:4px;">Pemburu Majas</p>
+
+      <div class="escape-badge">
+        <span class="dot"></span>
+        <span>Misi: Pecahkan Kode & Buka Mystery Box</span>
+      </div>
+
+      <div class="credit-line">
+        <span class="label">Media Inovasi</span>
+        <span class="name">Nur Isna Inun</span>
+        <span class="sub">PPG Calon Guru · Universitas Borneo Tarakan</span>
+      </div>
+
+      <div class="hr"></div>
+      <p class="subtle">Kamu terkunci di <b style="color:var(--red);">ruang misteri</b> perpustakaan sihir. Pintu kayu usang itu dipenuhi tanaman menjalar. Pecahkan teka-teki majas, kumpulkan kode, dan buka <b style="color:var(--gold-deep);">mystery box</b> untuk bebas!</p>
+
+      <div class="field" style="margin-top:16px;">
+        <label>Nama Lengkap</label>
+        <input id="in-name" placeholder="Contoh: Andi Pratama" maxlength="32" autocomplete="off"/>
+      </div>
+      <div class="field">
+        <label>Kelas</label>
+        <input id="in-class" placeholder="Contoh: XI IPA 2" maxlength="16" autocomplete="off"/>
+      </div>
+      <div class="field">
+        <label>Kode Akses Murid</label>
+        <input id="in-code" placeholder="Kode dari guru" maxlength="8" class="center" autocomplete="off"/>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px;">
+        <button class="btn btn-gold" onclick="Game.startFromHome()">🔐 Mulai Escape</button>
+        <button class="btn btn-ghost" onclick="Game.go('teacher-login')">👩‍🏫 Dashboard Guru</button>
+      </div>
+      <p style="font-size:.72rem;color:var(--ink-faint);text-align:center;line-height:1.6;margin-top:16px;">
+        Kapasitas demo: <b style="color:var(--violet-deep);">40 murid</b> per perangkat.<br>
+        Hasil murid tersimpan di localStorage perangkat ini.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- TEACHER LOGIN -->
+<section id="scr-teacher-login" class="screen">
+  <div class="wrap">
+    <div class="card">
+      <p class="eyebrow">Akses Guru</p>
+      <h2 class="title title-lg" style="margin:10px 0 16px;">Dashboard Guru</h2>
+      <p class="subtle" style="margin-bottom:16px;">Masukkan kode akses guru untuk membuka panel kontrol kelas.</p>
+      <div class="field">
+        <label>Kode Guru</label>
+        <input id="in-tcode" class="center" maxlength="8" placeholder="••••" autocomplete="off"/>
+      </div>
+      <p id="tcode-err" style="color:var(--red);font-size:.82rem;text-align:center;min-height:20px;margin-top:10px;font-weight:800;"></p>
+      <button class="btn btn-primary" style="margin-top:8px;" onclick="Teacher.login()">Masuk Dashboard</button>
+      <button class="btn-link" style="width:100%;margin-top:14px;text-align:center;" onclick="Game.go('home')">← Kembali</button>
+      <p style="font-size:.72rem;color:var(--ink-faint);text-align:center;line-height:1.6;margin-top:16px;">
+        Kode demo: <b style="color:var(--violet-deep);">7777</b><br>
+        Untuk aplikasi nyata, gunakan autentikasi server.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- TEACHER DASHBOARD -->
+<section id="scr-teacher" class="screen">
+  <div class="wrap" style="max-width:1100px;">
+    <div class="card">
+      <div class="dash-head">
+        <div>
+          <p class="eyebrow" style="text-align:left;">Panel Kontrol Kelas</p>
+          <h2 class="title title-lg" style="text-align:left;margin-top:4px;">Dashboard Guru</h2>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <span class="live-badge"><span class="live-dot"></span>Live</span>
+          <button class="btn btn-ghost btn-sm" onclick="Game.go('home')">Keluar</button>
+        </div>
+      </div>
+
+      <div class="join-grid">
+        <div class="session-info">
+          <small>Kode Sesi</small>
+          <strong>HUNTER01</strong>
+          <div class="student-code">Kode murid: <b>MAJAS</b></div>
+          <div class="student-code" style="margin-top:4px;">Kode guru: <b>7777</b></div>
+          <div style="margin-top:8px;font-size:.72rem;color:var(--ink-dim);font-weight:600;line-height:1.4;">
+            <b style="color:var(--red);">⚠️ Penting:</b> QR hanya berfungsi jika game ini sudah di-<b>hosting online</b> (Netlify/Vercel/GitHub Pages). Jika dibuka dari file lokal, QR berisi <code style="background:rgba(0,0,0,.1);padding:1px 4px;border-radius:3px;">file:///</code> yang tidak bisa di-scan dari HP lain.
+          </div>
+        </div>
+        <div class="qr-box">
+          <div class="qr-canvas-wrap">
+            <canvas id="qr-canvas" width="180" height="180"></canvas>
+          </div>
+          <div class="qr-label">📱 Scan untuk Join</div>
+          <div class="qr-sub" id="qr-sub">Memuat…</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+        <button class="btn btn-gold btn-sm" onclick="Teacher.copyLink()">📋 Salin Link Join</button>
+        <button class="btn btn-ghost btn-sm" onclick="Teacher.testQR()">🔍 Cek QR</button>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat"><div class="stat-num" id="st-total">0</div><div class="stat-lbl">Total Murid</div></div>
+        <div class="stat"><div class="stat-num" id="st-done">0</div><div class="stat-lbl">Selesai</div></div>
+        <div class="stat"><div class="stat-num" id="st-avg">0</div><div class="stat-lbl">Rata Skor</div></div>
+        <div class="stat"><div class="stat-num" id="st-err">0</div><div class="stat-lbl">Total Salah</div></div>
+        <div class="stat"><div class="stat-num" id="st-help">0</div><div class="stat-lbl">Bantuan</div></div>
+      </div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;">
+        <button class="btn btn-primary btn-sm" onclick="Teacher.exportCSV()">📥 Ekspor CSV</button>
+        <button class="btn btn-ghost btn-sm" onclick="Teacher.refresh()">🔄 Segarkan</button>
+        <button class="btn btn-ghost btn-sm" onclick="Teacher.clearAll()" style="color:var(--red);border-color:var(--red);">🗑️ Hapus Data</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>No</th><th>Nama</th><th>Kelas</th><th>Level</th><th>Skor</th>
+              <th>Salah</th><th>Bantuan</th><th>Durasi</th><th>Status</th><th>Detail</th>
+            </tr>
+          </thead>
+          <tbody id="t-table">
+            <tr><td colspan="10" class="empty-cell">Menunggu murid bergabung…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="lb-section">
+        <div class="lb-title"><span class="icon">🏆</span>Leaderboard 10 Teratas</div>
+        <p style="font-size:.72rem;color:var(--ink-dim);margin-bottom:10px;line-height:1.4;">
+          Diurutkan berdasarkan skor tertinggi, lalu dikurangi akumulasi bantuan, salah, dan durasi.
+        </p>
+        <div class="lb-list" id="lb-top"><div class="group-empty">Belum ada murid yang menyelesaikan permainan.</div></div>
+      </div>
+
+      <div class="lb-section">
+        <div class="lb-title"><span class="icon">🥈</span>10 Murid Berikutnya</div>
+        <div class="lb-list" id="lb-next"><div class="group-empty">Menunggu murid berikutnya.</div></div>
+      </div>
+
+      <div class="lb-section">
+        <div class="lb-title"><span class="icon">🎯</span>Kelompok Otomatis</div>
+        <p style="font-size:.72rem;color:var(--ink-dim);margin-bottom:10px;line-height:1.4;">
+          Pengelompokan otomatis berdasarkan skor akhir setelah murid menyelesaikan permainan.
+        </p>
+        <div class="groups-grid">
+          <div class="group-card group-master">
+            <div class="group-head">
+              <span class="group-icon">👑</span>
+              <span class="group-name">Master Cryptologist</span>
+              <span class="group-count" id="grp-master-count">0</span>
+            </div>
+            <div class="group-desc">Skor ≥ 90 — Kelompok atas. Ahli majas dan analisis sastra.</div>
+            <div class="group-members" id="grp-master-list"><div class="group-empty">Belum ada anggota.</div></div>
+          </div>
+          <div class="group-card group-breaker">
+            <div class="group-head">
+              <span class="group-icon">🕵️</span>
+              <span class="group-name">Code Breaker</span>
+              <span class="group-count" id="grp-breaker-count">0</span>
+            </div>
+            <div class="group-desc">Skor 70–89 — Kelompok tengah. Pemecah kode yang kompeten.</div>
+            <div class="group-members" id="grp-breaker-list"><div class="group-empty">Belum ada anggota.</div></div>
+          </div>
+          <div class="group-card group-novice">
+            <div class="group-head">
+              <span class="group-icon">🔐</span>
+              <span class="group-name">Cipher Novice</span>
+              <span class="group-count" id="grp-novice-count">0</span>
+            </div>
+            <div class="group-desc">Skor &lt; 70 — Kelompok dasar. Perlu latihan majas lebih lanjut.</div>
+            <div class="group-members" id="grp-novice-list"><div class="group-empty">Belum ada anggota.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="note" style="margin-top:20px;">
+        <strong>Catatan:</strong> Kode guru <b>7777</b> dan localStorage hanya untuk demo. Untuk sinkronisasi lintas HP ke dashboard guru terpusat, dibutuhkan backend daring (Supabase/Firebase).
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GAME -->
+<section id="scr-game" class="game-shell">
+  <div class="hud">
+    <div class="hud-pill">🎯 Level <b id="hud-level">1</b>/3</div>
+    <div class="hud-pill">⭐ Skor <b id="hud-score">100</b></div>
+    <div class="hud-pill">❌ Salah <b id="hud-wrong">0</b></div>
+    <div class="hud-pill">🪄 Bantuan <b id="hud-help">0</b>/3</div>
+    <div class="hud-pill">⏱️ <b id="hud-time">00:00</b></div>
+  </div>
+
+  <div class="escape-bar">
+    <div class="left">
+      <span class="lock-icon">🔒</span>
+      <span>RUANG TERKUNCI</span>
+    </div>
+    <div class="right">
+      <span>Progress Kunci:</span>
+      <div class="progress-lock" id="progress-lock">
+        <div class="seg"></div>
+        <div class="seg"></div>
+        <div class="seg"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="game-body">
+    <div id="room-slot"></div>
+    <div id="stage" style="position:relative;">
+      <div id="paper-slot"></div>
+    </div>
+    <div id="qpanel" style="display:flex;flex-direction:column;gap:14px;"></div>
+  </div>
+</section>
+
+<!-- VICTORY -->
+<section id="scr-victory" class="screen">
+  <div class="wrap">
+    <div class="card card-gold">
+      <p class="eyebrow">Escape Berhasil</p>
+      <h2 class="title title-xl" style="margin:10px 0;">MYSTERY BOX TERBUKA!</h2>
+      <div class="chest">
+        <div class="chest-glow"></div>
+        <div class="chest-lid"></div>
+        <div class="chest-body"></div>
+      </div>
+      <p class="subtle" id="v-msg">Selamat! Kamu berhasil membuka mystery box dan keluar dari ruang misteri!</p>
+      <div class="vscore">
+        <div class="item"><b id="v-score">100</b><span>Skor Akhir</span></div>
+        <div class="item"><b id="v-wrong">0</b><span>Jawaban Salah</span></div>
+        <div class="item"><b id="v-help">0</b><span>Kartu Bantuan</span></div>
+        <div class="item"><b id="v-time">00:00</b><span>Durasi</span></div>
+      </div>
+      <div id="v-group" class="note" style="background:linear-gradient(135deg,var(--gold-pale),var(--pink-pale),var(--violet-pale));border-color:var(--gold);color:var(--ink-soft);text-align:center;font-size:.9rem;">
+        <strong>Kelompokmu:</strong> <span id="v-group-name" style="font-family:Fredoka,sans-serif;font-size:1.1rem;color:var(--violet-deep);"></span>
+      </div>
+      <div class="note" style="background:linear-gradient(135deg,rgba(34,197,94,.15),rgba(56,189,248,.1));border-color:var(--green);color:var(--green-deep);text-align:left;margin-top:14px;">
+        <strong>Apresiasi:</strong> Kamu telah menguasai cara mengenali majas dalam cerpen Indonesia. Teruslah membaca dan menulis untuk mengasah kepekaan bahasamu!
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px;">
+        <button class="btn btn-gold" onclick="location.reload()">🔐 Escape Lagi</button>
+        <button class="btn btn-ghost" onclick="Game.go('home')">🏠 Kembali ke Beranda</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="level-transition" id="level-transition">
+  <div class="lt-inner">
+    <span class="lt-icon" id="lt-icon">📜</span>
+    <div class="lt-badge" id="lt-badge">LEVEL 1</div>
+    <div class="lt-title" id="lt-title">The Forgotten Manuscript</div>
+    <div class="lt-sub" id="lt-sub">Menyiapkan ruangan…</div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const MAJAS_META = {
+  hiperbola:     { label: 'Hiperbola',     color: 'm-hiperbola',     desc: 'Melebih-lebihkan' },
+  metafora:      { label: 'Metafora',      color: 'm-metafora',      desc: 'Perbandingan langsung' },
+  personifikasi: { label: 'Personifikasi', color: 'm-personifikasi', desc: 'Benda berperilaku manusia' },
+  simile:        { label: 'Simile',        color: 'm-simile',        desc: 'Perbandingan dengan kata "seperti"' },
+  ironi:         { label: 'Ironi',         color: 'm-ironi',         desc: 'Sindiran halus' }
+};
+
+const LEVELS = [
+  { id:1, title:'The Forgotten Manuscript', theme:'Hiperbola · Metafora · Personifikasi',
+    password:'MAJASKU',
+    story:'Kamu terkunci di <b>ruang misteri pertama</b> perpustakaan tua. Untuk membuka pintu, pecahkan tiga majas dalam manuskrip usang. Kumpulkan 7 huruf kode!',
+    questions:[
+      { quote:'Angin malam berbisik lembut di telinga sang pengembara, seolah membawa pesan dari masa lalu.',
+        source:'Dari cerpen "Angin Malam" karya Nh. Dini',
+        q:'Majas apa yang dominan pada kutipan tersebut?',
+        options:['hiperbola','metafora','personifikasi'], answer:2, codeLetter:'M',
+        explanation:'Kata "berbisik" adalah sifat manusia yang diberikan kepada angin — inilah personifikasi.' },
+      { quote:'Matanya adalah samudra yang menenggelamkan setiap rahasia.',
+        source:'Dari cerpen "Lautan Rahasia" karya Seno Gumira Ajidarma',
+        q:'Majas apa yang digunakan pada kutipan tersebut?',
+        options:['metafora','personifikasi','hiperbola'], answer:0, codeLetter:'A',
+        explanation:'Metafora membandingkan langsung tanpa kata pembanding.' },
+      { quote:'Aku telah memanggil namanya sejuta kali, namun ia tak pernah menoleh.',
+        source:'Dari cerpen "Penantian" karya Putu Wijaya',
+        q:'Majas apa yang digunakan pada kutipan tersebut?',
+        options:['personifikasi','hiperbola','metafora'], answer:1, codeLetter:'J',
+        explanation:'Hiperbola adalah pernyataan yang dilebih-lebihkan.' },
+      { quote:'Bulan tersenyum menyaksikan dua sejoli itu berjalan di bawahnya.',
+        source:'Dari cerpen "Di Bawah Bulan" karya Andrea Hirata',
+        q:'Majas apa yang dominan pada kutipan tersebut?',
+        options:['metafora','personifikasi','hiperbola'], answer:1, codeLetter:'A',
+        explanation:'Personifikasi "bulan tersenyum" memperkuat kesan romantis.' },
+      { quote:'Air matanya mengalir hingga membentuk sungai di lantai kamar.',
+        source:'Dari cerpen "Sungai Kesedihan" karya Tere Liye',
+        q:'Majas apa yang digunakan pada kutipan tersebut?',
+        options:['hiperbola','metafora','personifikasi'], answer:0, codeLetter:'S',
+        explanation:'Hiperbola "membentuk sungai" menekankan kedalaman kesedihan.' },
+      { quote:'Kata-katanya adalah pedang yang menembus hati lawan bicaranya.',
+        source:'Dari cerpen "Pedang Kata" karya Ayu Utami',
+        q:'Majas apa yang digunakan pada kutipan tersebut?',
+        options:['personifikasi','metafora','hiperbola'], answer:1, codeLetter:'K',
+        explanation:'Metafora "kata-kata adalah pedang".' },
+      { quote:'Pohon-pohon melambai riang menyambut kedatangan musim semi.',
+        source:'Dari cerpen "Musim Semi di Tarakan" karya Kuntowijoyo',
+        q:'Majas apa yang digunakan pada kutipan tersebut?',
+        options:['personifikasi','metafora','hiperbola'], answer:0, codeLetter:'U',
+        explanation:'Pohon "melambai" dan "riang" — personifikasi.' }
+    ]
+  },
+  { id:2, title:'The Hall of Illusions', theme:'Hiperbola · Metafora · Personifikasi · Simile',
+    password:'SIMILEKU',
+    story:'Aula cermin menampilkan <b>ilusi makna</b>. Empat majas diuji — tambah simile! Kumpulkan 8 huruf kode.',
+    questions:[
+      { quote:'Wajahnya putih seperti kapas yang baru dipetik di pagi hari.',
+        source:'Dari cerpen "Kapas di Ladang" karya Ahmad Tohari',
+        q:'Majas apa yang digunakan pada kutipan tersebut?',
+        options:['metafora','simile','personifikasi','hiperbola'], answer:1, codeLetter:'S',
+        explanation:'Simile ditandai kata "seperti".' },
+      { quote:'Kota itu adalah labirin yang menyesatkan setiap pendatangnya.',
+        source:'Dari cerpen "Labirin Kota" karya Seno Gumira Ajidarma',
+        q:'Majas apa yang digunakan pada kutipan tersebut?',
+        options:['simile','hiperbola','metafora','personifikasi'], answer:2, codeLetter:'I',
+        explanation:'Kota disamakan langsung dengan labirin — metafora.' },
+      { quote:'Teriakannya menggetarkan seluruh lembah hingga burung-burung beterbangan ketakutan.',
+        source:'Dari cerpen "Suara dari Lembah" karya Kuntowijoyo',
+        q:'Majas apa yang digunakan pada kutipan tersebut?',
+        options:['hiperbola','metafora','personifikasi','simile'], answer:0, codeLetter:'M',
+        explanation:'Hiperbola: teriakan menggetarkan lembah.' },
+      { quote:'Daun-daun menari riang saat hujan turun membasahi bumi.',
+        source:'Dari cerpen "Hujan di Bulan Juni" karya Sapardi Djoko Damono',
+        q:'Majas apa yang digunakan pada kutipan tersebut?',
+        options:['simile','metafora','personifikasi','hiperbola'], answer:2, codeLetter:'I',
+        explanation:'Daun "menari riang" — personifikasi.' },
+      { quote:'Langkahnya ringan bagaikan bulu yang tertiup angin.',
+        source:'Dari cerpen "Bulu Angin" karya Dee Lestari',
+        q:'Majas apa yang digunakan pada kutipan tersebut?',
+        options:['metafora','simile','personifikasi','hiperbola'], answer:1, codeLetter:'L',
+        explanation:'Kata "bagaikan" menandai simile.' },
+      { quote:'Waktu adalah pencuri yang tak pernah tertangkap.',
+        source:'Dari cerpen "Waktu" karya Putu Wijaya',
+        q:'Majas apa yang digunakan pada kutipan tersebut?',
+        options:['hiperbola','personifikasi','metafora','simile'], answer:2, codeLetter:'E',
+        explanation:'Waktu disamakan langsung dengan pencuri — metafora.' },
+      { quote:'Rumahnya jauh hingga harus menempuh tujuh gunung dan tujuh lautan.',
+        source:'Dari cerpen "Tujuh Gunung" karya Andrea Hirata',
+        q:'Majas apa yang digunakan pada kutipan tersebut?',
+        options:['metafora','simile','hiperbola','personifikasi'], answer:2, codeLetter:'K',
+        explanation:'Hiperbola "tujuh gunung dan tujuh lautan".' },
+      { quote:'Senyumnya adalah matahari yang menerangi hari-hari kelamku.',
+        source:'Dari cerpen "Matahari Kecil" karya Tere Liye',
+        q:'Majas apa yang digunakan pada kutipan tersebut?',
+        options:['simile','metafora','personifikasi','hiperbola'], answer:1, codeLetter:'U',
+        explanation:'Senyum disamakan langsung dengan matahari — metafora.' }
+    ]
+  },
+  { id:3, title:'The Golden Mystery Vault', theme:'Hiperbola · Metafora · Personifikasi · Simile · Ironi',
+    password:'EMASMURNI',
+    story:'Di ruang terakhir, <b>mystery box emas</b> dijaga lima majas. Kini ironi ikut diuji! Kumpulkan 9 huruf kode dan buka kotak untuk bebas!',
+    questions:[
+      { quote:'Kecantikannya membuat bunga-bunga di taman menunduk malu.',
+        source:'Dari cerpen "Taman Rahasia" karya Ayu Utami',
+        q:'Majas apa yang dominan pada kutipan tersebut?',
+        options:['metafora','hiperbola','personifikasi','simile','ironi'], answer:1, codeLetter:'E',
+        explanation:'Hiperbola "bunga menunduk malu".' },
+      { quote:'Suaranya merdu bagaikan kicau burung di pagi hari.',
+        source:'Dari cerpen "Suara Pagi" karya Nh. Dini',
+        q:'Majas apa yang digunakan pada kutipan tersebut?',
+        options:['metafora','simile','personifikasi','hiperbola','ironi'], answer:1, codeLetter:'M',
+        explanation:'Kata "bagaikan" menandai simile.' },
+      { quote:'Kemarahannya membakar seluruh isi hatinya hingga menjadi abu.',
+        source:'Dari cerpen "Abu" karya Putu Wijaya',
+        q:'Majas apa yang digunakan pada kutipan tersebut?',
+        options:['personifikasi','metafora','hiperbola','simile','ironi'], answer:2, codeLetter:'A',
+        explanation:'Hiperbola: kemarahan membakar hingga menjadi abu.' },
+      { quote:'Hatinya adalah gudang yang menyimpan dendam bertahun-tahun.',
+        source:'Dari cerpen "Gudang Dendam" karya Seno Gumira Ajidarma',
+        q:'Majas apa yang digunakan pada kutipan tersebut?',
+        options:['simile','metafora','hiperbola','personifikasi','ironi'], answer:1, codeLetter:'S',
+        explanation:'Metafora "hati adalah gudang".' },
+      { quote:'Pisang itu begitu manis sampai aku merasa gula-gula pun kalah.',
+        source:'Dari cerpen "Pisang Pak Tani" karya Ahmad Tohari',
+        q:'Majas apa yang digunakan pada kutipan tersebut?',
+        options:['hiperbola','simile','ironi','metafora','personifikasi'], answer:0, codeLetter:'M',
+        explanation:'Hiperbola: "gula-gula pun kalah".' },
+      { quote:'Wajahnya sangat "ramah" hingga membuat semua orang di ruangan itu memilih pergi.',
+        source:'Dari cerpen "Wajah Ramah" karya Dee Lestari',
+        q:'Majas apa yang digunakan pada kutipan tersebut?',
+        options:['metafora','simile','ironi','hiperbola','personifikasi'], answer:2, codeLetter:'U',
+        explanation:'Ironi: kata "ramah" bermakna sebaliknya.' },
+      { quote:'Angin berbisik lembut di telinga sang pengembara, seolah membawa pesan dari masa lalu.',
+        source:'Dari cerpen "Angin Malam" karya Nh. Dini',
+        q:'Majas apa yang digunakan pada kutipan tersebut?',
+        options:['hiperbola','metafora','personifikasi','simile','ironi'], answer:2, codeLetter:'R',
+        explanation:'Angin "berbisik" — personifikasi.' },
+      { quote:'Langkahnya ringan seperti kapas yang tertiup angin.',
+        source:'Dari cerpen "Kapas" karya Dee Lestari',
+        q:'Majas apa yang digunakan pada kutipan tersebut?',
+        options:['metafora','simile','personifikasi','hiperbola','ironi'], answer:1, codeLetter:'N',
+        explanation:'Kata "seperti" menandai simile.' },
+      { quote:'Dia memang "rajin" — sepanjang hari hanya duduk memandangi langit-langit kamar.',
+        source:'Dari cerpen "Si Rajin" karya Andrea Hirata',
+        q:'Majas apa yang digunakan pada kutipan tersebut?',
+        options:['metafora','simile','personifikasi','hiperbola','ironi'], answer:4, codeLetter:'I',
+        explanation:'Ironi: kata "rajin" bermakna sebaliknya.' }
+    ]
+  }
+];
+
+const PASSWORDS = { student: 'MAJAS', teacher: '7777' };
+const STORAGE_KEY = 'majas_hunter_results_v4';
+const SESSION_STORAGE_KEY = 'majas_hunter_session_v4';
+const MAX_STUDENTS = 40;
+
+const BackendBridge = {
+  isConfigured: false,
+  async upsertStudent(student) { if (!this.isConfigured) return; },
+  async broadcastUpdate(snapshot) { if (!this.isConfigured) return; }
+};
+
+function getSession() {
+  try { const raw = localStorage.getItem(SESSION_STORAGE_KEY); return raw ? JSON.parse(raw) : []; }
+  catch (e) { return []; }
+}
+function saveSession(arr) {
+  try { localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(arr)); } catch(e){}
+}
+function updateStudentLive(student) {
+  const session = getSession();
+  const idx = session.findIndex(s => s.id === student.id);
+  if (idx >= 0) session[idx] = { ...session[idx], ...student };
+  else session.push(student);
+  saveSession(session);
+  BackendBridge.upsertStudent(student);
+}
+
+const QRGenerator = (function() {
+  const EXP = new Array(512), LOG = new Array(256);
+  (function init() {
+    let x = 1;
+    for (let i = 0; i < 255; i++) { EXP[i] = x; LOG[x] = i; x <<= 1; if (x & 0x100) x ^= 0x11d; }
+    for (let i = 255; i < 512; i++) EXP[i] = EXP[i - 255];
+  })();
+  function gfMul(a, b) { if (a === 0 || b === 0) return 0; return EXP[LOG[a] + LOG[b]]; }
+  function rsGenPoly(deg) {
+    let poly = [1];
+    for (let i = 0; i < deg; i++) {
+      const next = new Array(poly.length + 1).fill(0);
+      for (let j = 0; j < poly.length; j++) {
+        next[j] ^= poly[j]; next[j + 1] ^= gfMul(poly[j], EXP[i]);
+      }
+      poly = next;
+    }
+    return poly;
+  }
+  function rsEncode(data, ecCount) {
+    const gen = rsGenPoly(ecCount);
+    const res = new Array(data.length + ecCount).fill(0);
+    for (let i = 0; i < data.length; i++) res[i] = data[i];
+    for (let i = 0; i < data.length; i++) {
+      const factor = res[i]; if (factor === 0) continue;
+      for (let j = 0; j < gen.length; j++) res[i + j] ^= gfMul(gen[j], factor);
+    }
+    return res.slice(data.length);
+  }
+  function encode(text) {
+    if (text.length > 104) return null;
+    const bits = [];
+    bits.push(0,1,0,0);
+    const len = text.length;
+    for (let i = 7; i >= 0; i--) bits.push((len >> i) & 1);
+    for (let i = 0; i < text.length; i++) {
+      const code = text.charCodeAt(i);
+      for (let b = 7; b >= 0; b--) bits.push((code >> b) & 1);
+    }
+    const totalDataBits = 108 * 8;
+    for (let i = 0; i < 4 && bits.length < totalDataBits; i++) bits.push(0);
+    while (bits.length % 8 !== 0) bits.push(0);
+    const padBytes = [0xEC, 0x11]; let pi = 0;
+    while (bits.length < totalDataBits) {
+      for (let i = 7; i >= 0; i--) bits.push((padBytes[pi] >> i) & 1);
+      pi = (pi + 1) % 2;
+    }
+    const bytes = [];
+    for (let i = 0; i < bits.length; i += 8) {
+      let b = 0; for (let j = 0; j < 8; j++) b = (b << 1) | bits[i+j];
+      bytes.push(b);
+    }
+    const blocks = [[],[],[],[]];
+    for (let i = 0; i < 108; i++) blocks[i % 4].push(bytes[i]);
+    const ecBlocks = blocks.map(b => rsEncode(b, 16));
+    const interleaved = [];
+    for (let i = 0; i < 27; i++) for (let j = 0; j < 4; j++) interleaved.push(blocks[j][i]);
+    for (let i = 0; i < 16; i++) for (let j = 0; j < 4; j++) interleaved.push(ecBlocks[j][i]);
+    return interleaved;
+  }
+  function buildMatrix(dataBytes) {
+    const size = 41;
+    const matrix = [], reserved = [];
+    for (let i = 0; i < size; i++) { matrix.push(new Array(size).fill(0)); reserved.push(new Array(size).fill(false)); }
+    function placeFinder(r, c) {
+      for (let i = -1; i <= 7; i++) for (let j = -1; j <= 7; j++) {
+        const rr = r + i, cc = c + j;
+        if (rr < 0 || rr >= size || cc < 0 || cc >= size) continue;
+        reserved[rr][cc] = true;
+        if ((i >= 0 && i <= 6 && (j === 0 || j === 6)) || (j >= 0 && j <= 6 && (i === 0 || i === 6)) || (i >= 2 && i <= 4 && j >= 2 && j <= 4)) matrix[rr][cc] = 1;
+      }
+    }
+    placeFinder(0, 0); placeFinder(0, size - 7); placeFinder(size - 7, 0);
+    function placeAlign(r, c) {
+      for (let i = -2; i <= 2; i++) for (let j = -2; j <= 2; j++) {
+        const rr = r + i, cc = c + j;
+        if (rr < 0 || rr >= size || cc < 0 || cc >= size) continue;
+        if (reserved[rr][cc]) continue;
+        reserved[rr][cc] = true;
+        if (Math.abs(i) === 2 || Math.abs(j) === 2 || (i === 0 && j === 0)) matrix[rr][cc] = 1;
+      }
+    }
+    placeAlign(6, 34); placeAlign(34, 6); placeAlign(34, 34);
+    for (let i = 8; i < size - 8; i++) {
+      matrix[6][i] = i % 2 === 0 ? 1 : 0; matrix[i][6] = i % 2 === 0 ? 1 : 0;
+      reserved[6][i] = true; reserved[i][6] = true;
+    }
+    matrix[size - 8][8] = 1; reserved[size - 8][8] = true;
+    for (let i = 0; i <= 8; i++) {
+      if (!reserved[8][i]) reserved[8][i] = true;
+      if (!reserved[i][8]) reserved[i][8] = true;
+      if (!reserved[8][size - 1 - i]) reserved[8][size - 1 - i] = true;
+      if (!reserved[size - 1 - i][8]) reserved[size - 1 - i][8] = true;
+    }
+    const bits = [];
+    for (let i = 0; i < dataBytes.length; i++) for (let b = 7; b >= 0; b--) bits.push((dataBytes[i] >> b) & 1);
+    let bitIdx = 0, upward = true;
+    for (let col = size - 1; col > 0; col -= 2) {
+      if (col === 6) col = 5;
+      for (let k = 0; k < size; k++) {
+        const row = upward ? size - 1 - k : k;
+        for (let c = 0; c < 2; c++) {
+          const ac = col - c;
+          if (!reserved[row][ac]) { matrix[row][ac] = bitIdx < bits.length ? bits[bitIdx] : 0; bitIdx++; }
+        }
+      }
+      upward = !upward;
+    }
+    const ecLevel = 0, mask = 0;
+    const fmtData = (ecLevel << 3) | mask;
+    let fmtBits = fmtData << 10;
+    for (let i = 4; i >= 0; i--) if (fmtBits & (1 << (i + 10))) fmtBits ^= 0x537 << i;
+    const fmtFinal = ((fmtData << 10) | fmtBits) ^ 0x5412;
+    for (let i = 0; i <= 14; i++) {
+      const bit = (fmtFinal >> i) & 1;
+      if (i < 6) matrix[i][8] = bit; else if (i < 8) matrix[i + 1][8] = bit; else matrix[size - 15 + i][8] = bit;
+      if (i < 8) matrix[8][size - i - 1] = bit; else if (i < 9) matrix[8][15 - i] = bit; else matrix[8][15 - i - 1] = bit;
+    }
+    matrix[size - 8][8] = 1;
+    for (let r = 0; r < size; r++) for (let c = 0; c < size; c++)
+      if (!reserved[r][c] && (r + c) % 2 === 0) matrix[r][c] ^= 1;
+    return matrix;
+  }
+  function generate(text) {
+    try { const bytes = encode(text); if (!bytes) return null; return buildMatrix(bytes); }
+    catch (e) { console.error('QR error:', e); return null; }
+  }
+  function drawOnCanvas(canvas, matrix, options = {}) {
+    if (!matrix) return false;
+    const moduleSize = options.moduleSize || 4;
+    const quiet = options.quiet || 4;
+    const size = matrix.length;
+    const totalPx = (size + quiet * 2) * moduleSize;
+    canvas.width = totalPx; canvas.height = totalPx;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = options.bgColor || '#ffffff';
+    ctx.fillRect(0, 0, totalPx, totalPx);
+    ctx.fillStyle = options.fgColor || '#5b21b6';
+    for (let r = 0; r < size; r++) for (let c = 0; c < size; c++)
+      if (matrix[r][c]) ctx.fillRect((c + quiet) * moduleSize, (r + quiet) * moduleSize, moduleSize, moduleSize);
+    return true;
+  }
+  return { generate, drawOnCanvas };
+})();
+
+const Game = {
+  state: null, _timer: null,
+
+  go(screenId) {
+    document.querySelectorAll('.screen, .game-shell').forEach(el => el.classList.remove('active'));
+    const target = screenId === 'game' ? document.getElementById('scr-game') : document.getElementById('scr-' + screenId);
+    if (target) { target.classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    if (screenId === 'teacher') { Teacher.startLiveRefresh(); Teacher.renderQR(); }
+    else Teacher.stopLiveRefresh();
+  },
+
+  startFromHome() {
+    const name = document.getElementById('in-name').value.trim();
+    const cls  = document.getElementById('in-class').value.trim();
+    const code = document.getElementById('in-code').value.trim().toUpperCase();
+    if (!name) return toast('Nama lengkap wajib diisi.', 'bad');
+    if (!cls)  return toast('Kelas wajib diisi.', 'bad');
+    if (code !== PASSWORDS.student) return toast('Kode akses murid salah. Kode demo: MAJAS', 'bad');
+    const results = loadResults();
+    if (results.length >= MAX_STUDENTS) return toast('Kapasitas 40 murid sudah penuh.', 'bad');
+    this.startGame({ name, class: cls });
+  },
+
+  startGame(player) {
+    const id = 'S' + Date.now() + Math.random().toString(36).slice(2,6);
+    this.state = { id, player, level: 0, qIndex: 0, score: 100, wrong: 0, helpUsed: 0,
+      helpUsedThisLevel: false, startTime: Date.now(), endTime: null,
+      answers: [], collectedCodes: [], finished: false, _pendingHelp: false, _answered: false };
+    updateStudentLive({ id, name: player.name, class: player.class, level: 0, totalLevels: 3, score: 100,
+      wrong: 0, help: 0, duration: 0, durationStr: '00:00', finished: false,
+      startedAt: new Date(this.state.startTime).toISOString(), finishedAt: null });
+    this.updateHUD(); this.updateProgressLock(); this.startTimer(); this.go('game'); this.loadLevel(0);
+  },
+
+  startTimer() {
+    clearInterval(this._timer);
+    this._timer = setInterval(() => { this.updateHUD(); this.syncLive(); }, 1000);
+  },
+
+  syncLive() {
+    if (!this.state) return;
+    const s = this.state;
+    const elapsed = Math.floor(((s.endTime || Date.now()) - s.startTime) / 1000);
+    updateStudentLive({ id: s.id, name: s.player.name, class: s.player.class,
+      level: s.finished ? 3 : s.level, totalLevels: 3, score: s.score, wrong: s.wrong, help: s.helpUsed,
+      duration: elapsed, durationStr: formatTime(elapsed), finished: s.finished,
+      finishedAt: s.finished ? new Date(s.endTime).toISOString() : null });
+  },
+
+  updateHUD() {
+    if (!this.state) return;
+    const s = this.state;
+    const el = id => document.getElementById(id);
+    if (el('hud-level')) el('hud-level').textContent = s.level + 1;
+    if (el('hud-score')) el('hud-score').textContent = s.score;
+    if (el('hud-wrong')) el('hud-wrong').textContent = s.wrong;
+    if (el('hud-help')) el('hud-help').textContent = s.helpUsed;
+    const elapsed = Math.floor(((s.endTime || Date.now()) - s.startTime) / 1000);
+    if (el('hud-time')) el('hud-time').textContent = formatTime(elapsed);
+  },
+
+  updateProgressLock() {
+    const lock = document.getElementById('progress-lock');
+    if (!lock) return;
+    const segs = lock.querySelectorAll('.seg');
+    segs.forEach((seg, i) => {
+      seg.classList.toggle('done', i < this.state.level || (this.state.finished && i < 3));
+    });
+  },
+
+  loadLevel(idx) {
+    this.state.level = idx; this.state.qIndex = 0;
+    this.state.helpUsedThisLevel = false;
+    this.state.collectedCodes = [];
+    this.state._answered = false; this.state._pendingHelp = false;
+    this.state.phase = 'room';
+    this.updateProgressLock();
+    this.showLevelTransition(idx, () => {
+      this.renderRoom();
+      this.syncLive();
+    });
+  },
+
+  showLevelTransition(idx, cb) {
+    const level = LEVELS[idx];
+    const overlay = document.getElementById('level-transition');
+    const icons = ['🚪', '🪞', '📚'];
+    document.getElementById('lt-icon').textContent = icons[idx] || '📜';
+    document.getElementById('lt-badge').textContent = `LEVEL ${idx + 1} / 3`;
+    document.getElementById('lt-title').textContent = level.title;
+    document.getElementById('lt-sub').textContent =
+      idx === 0 ? 'Pintu kayu usang berderit... manuskrip tersembunyi menantimu.' :
+      idx === 1 ? 'Sudut baca dengan cermin antik... ilusi makna menantang matamu.' :
+                  'Rak buku tua berbisik... vault emas terjaga di baliknya.';
+    overlay.classList.add('show');
+    setTimeout(() => {
+      overlay.classList.remove('show');
+      if (typeof cb === 'function') cb();
+    }, 1600);
+  },
+
+  renderRoom() {
+    const idx = this.state.level;
+    const slot = document.getElementById('room-slot');
+    const paperSlot = document.getElementById('paper-slot');
+    const qpanel = document.getElementById('qpanel');
+    if (paperSlot) paperSlot.innerHTML = '';
+    if (qpanel) qpanel.innerHTML = '';
+    if (!slot) return;
+
+    if (idx === 0) slot.innerHTML = this.roomDoorHTML();
+    else if (idx === 1) slot.innerHTML = this.roomMirrorHTML();
+    else slot.innerHTML = this.roomBookshelfHTML();
+
+    setTimeout(() => {
+      if (idx === 0) this.bindDoor();
+      else if (idx === 1) this.bindMirror();
+      else this.bindBookshelf();
+    }, 60);
+  },
+
+  roomDoorHTML() {
+    return `<div class="room-scene" id="room-scene">
+      <div class="room-shelf-side l"></div>
+      <div class="room-shelf-side r"></div>
+      <div class="room-door" id="room-door">
+        <div class="rd-handle"></div>
+      </div>
+      <div class="room-door-glow"></div>
+      <div class="room-hint">👆 Ketuk pintu untuk membuka</div>
+    </div>`;
+  },
+
+  roomMirrorHTML() {
+    return `<div class="room-scene" id="room-scene">
+      <div class="room-mirror" id="room-mirror">
+        <div class="mirror-frame"></div>
+        <div class="mirror-glass">
+          <div class="mirror-text" id="mirror-text">Cermin ini menyimpan ilusi makna…<br>Ketuk untuk mengungkap misi.</div>
+          <span class="mirror-spark" style="top:20%;left:20%;--sx:-30px;--sy:-40px;"></span>
+          <span class="mirror-spark" style="top:40%;left:70%;--sx:40px;--sy:-30px;animation-delay:.15s;"></span>
+          <span class="mirror-spark" style="top:70%;left:30%;--sx:-40px;--sy:30px;animation-delay:.3s;"></span>
+          <span class="mirror-spark" style="top:60%;left:75%;--sx:50px;--sy:20px;animation-delay:.45s;"></span>
+        </div>
+        <div class="mirror-candle l"></div>
+        <div class="mirror-candle r"></div>
+        <div class="mirror-table"></div>
+      </div>
+      <div class="room-hint">👆 Ketuk cermin untuk melihat misi</div>
+    </div>`;
+  },
+
+  roomBookshelfHTML() {
+    const colors = ['bk-red','bk-blue','bk-green','bk-purple','bk-gold','bk-brown','bk-teal','bk-pink','bk-dark','bk-cream'];
+    const rows = [];
+    for (let r = 0; r < 3; r++) {
+      let books = '';
+      const count = 12 + (r % 2);
+      for (let i = 0; i < count; i++) {
+        const cls = colors[(i + r * 3) % colors.length];
+        const special = (r === 1 && i === 5) ? ' special' : '';
+        const id = (r === 1 && i === 5) ? ' id="special-book"' : '';
+        books += `<div class="rb-book ${cls}${special}"${id}></div>`;
+      }
+      rows.push(`<div class="rb-shelf">${books}</div>`);
+    }
+    return `<div class="room-scene" id="room-scene">
+      <div class="room-vine-deco v1"></div>
+      <div class="room-vine-deco v2"></div>
+      <div class="room-vine-deco v3"></div>
+      <div class="room-bookshelf" id="room-bookshelf">${rows.join('')}</div>
+      <div class="room-hint">👆 Ketuk buku yang berkilau</div>
+    </div>`;
+  },
+
+  bindDoor() {
+    const door = document.getElementById('room-door');
+    if (!door) return;
+    door.addEventListener('click', () => {
+      if (door.classList.contains('opening')) return;
+      door.classList.add('opening');
+      this.spawnDust(door);
+      setTimeout(() => this.revealMission(), 1500);
+    });
+  },
+
+  spawnDust(door) {
+    const scene = document.getElementById('room-scene');
+    if (!scene) return;
+    for (let i = 0; i < 14; i++) {
+      const d = document.createElement('div');
+      d.className = 'room-dust';
+      d.style.left = (40 + Math.random() * 60) + '%';
+      d.style.top = (30 + Math.random() * 50) + '%';
+      d.style.setProperty('--dx', (Math.random() * 120 - 60) + 'px');
+      d.style.setProperty('--dy', (Math.random() * -100) + 'px');
+      d.style.animationDelay = (Math.random() * .4) + 's';
+      scene.appendChild(d);
+      setTimeout(() => d.remove(), 3000);
+    }
+  },
+
+  bindMirror() {
+    const mirror = document.getElementById('room-mirror');
+    if (!mirror) return;
+    mirror.addEventListener('click', () => {
+      if (mirror.classList.contains('shining')) return;
+      mirror.classList.add('shining');
+      const txt = document.getElementById('mirror-text');
+      if (txt) txt.innerHTML = '✨ Misi terungkap! ✨';
+      setTimeout(() => this.revealMission(), 1400);
+    });
+  },
+
+  bindBookshelf() {
+    const special = document.getElementById('special-book');
+    if (!special) return;
+    special.addEventListener('click', () => {
+      if (special.classList.contains('flying')) return;
+      special.classList.add('flying');
+      setTimeout(() => this.revealMission(), 1200);
+    });
+    document.querySelectorAll('.rb-book').forEach(b => {
+      if (b.id === 'special-book') return;
+      b.addEventListener('click', () => toast('Bukan buku ini… cari yang berkilau emas.', 'gold'));
+    });
+  },
+
+  revealMission() {
+    const slot = document.getElementById('room-slot');
+    if (slot) {
+      slot.style.transition = 'opacity .5s, transform .5s';
+      slot.style.opacity = '0';
+      slot.style.transform = 'scale(.92)';
+      setTimeout(() => { slot.innerHTML = ''; slot.style.opacity = '1'; slot.style.transform = 'scale(1)'; }, 500);
+    }
+    setTimeout(() => {
+      this.state.phase = 'mission';
+      this.renderLevel();
+      setTimeout(() => {
+        const paper = document.querySelector('.mission-paper');
+        if (paper) paper.classList.add('reveal');
+      }, 50);
+    }, 520);
+  },
+
+  renderLevel() {
+    this.state.phase = 'question';
+    const idx = this.state.level, level = LEVELS[idx];
+    const q = level.questions[this.state.qIndex];
+    const total = level.password.length;
+
+    document.getElementById('paper-slot').innerHTML = `
+      <div class="mission-paper">
+        <div class="watermark">TOP SECRET</div>
+        <div class="paper-header">
+          <span class="paper-badge">🔍 Misi ${idx + 1}</span>
+          <span class="paper-level">${level.title}</span>
+        </div>
+        <div class="paper-title">${level.title}</div>
+        <div class="paper-theme">${level.theme}</div>
+        <div class="paper-story">${level.story}</div>
+        <div class="paper-quote">${q.quote}</div>
+        <div class="paper-source">${q.source}</div>
+        <div class="paper-q">Soal ${this.state.qIndex + 1}/${level.questions.length} — ${q.q}</div>
+      </div>`;
+
+    document.getElementById('qpanel').innerHTML = `
+      <div class="card-stage">
+        ${q.options.map((mKey, i) => {
+          const meta = MAJAS_META[mKey];
+          return `<button class="uno-card ${meta.color}" data-i="${i}" onclick="Game.answer(${i})">
+            <div class="majas-name">${meta.label}</div>
+            <div class="majas-desc">${meta.desc}</div>
+            <div class="card-pick">Pilih ini</div>
+          </button>`;
+        }).join('')}
+      </div>
+      <div class="code-collector" id="code-collector">
+        <div class="code-header">
+          <span class="code-title">🔑 Kode Kunci Rahasia</span>
+          <span class="code-progress" id="code-progress">0 / ${total} huruf</span>
+        </div>
+        <div class="code-slots" id="code-slots"></div>
+        <div class="code-input-row">
+          <input id="code-input" class="code-input" maxlength="${level.password.length}" placeholder="Ketik kode lengkap" autocomplete="off"/>
+          <button class="code-submit" id="code-submit" onclick="Game.submitCode()" disabled>Buka 🔓</button>
+        </div>
+        <div class="code-msg" id="code-msg"></div>
+      </div>
+      <div class="feedback" id="fb"></div>
+      <div id="action-slot"></div>`;
+
+    this.renderCodeSlots(); this.updateCodeProgress(); this.attachCodeInputListener();
+    this.state._answered = false;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  },
+
+  renderCodeSlots() {
+    const level = LEVELS[this.state.level];
+    const slots = document.getElementById('code-slots');
+    if (!slots) return;
+    let html = '';
+    for (let i = 0; i < level.password.length; i++) {
+      const filled = this.state.collectedCodes[i];
+      const isCurrent = i === this.state.collectedCodes.length;
+      html += `<div class="code-slot ${filled ? 'filled' : ''} ${isCurrent ? 'current' : ''}">${filled || ''}</div>`;
+    }
+    slots.innerHTML = html;
+  },
+
+  updateCodeProgress() {
+    const total = LEVELS[this.state.level].password.length;
+    const collected = this.state.collectedCodes.length;
+    const prog = document.getElementById('code-progress');
+    if (prog) prog.textContent = `${collected} / ${total} huruf`;
+    const submit = document.getElementById('code-submit');
+    if (submit) submit.disabled = collected < total;
+    this.renderCodeSlots();
+  },
+
+  attachCodeInputListener() {
+    const input = document.getElementById('code-input');
+    if (!input) return;
+    input.addEventListener('input', () => { input.value = input.value.toUpperCase().replace(/[^A-Z]/g, ''); });
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.target.disabled) this.submitCode(); });
+  },
+
+  answer(chosenIdx) {
+    if (this.state._answered) return;
+    this.state._answered = true;
+    const level = LEVELS[this.state.level];
+    const q = level.questions[this.state.qIndex];
+    const correct = chosenIdx === q.answer;
+    const cards = document.querySelectorAll('.uno-card');
+    cards.forEach(c => c.disabled = true);
+    const fb = document.getElementById('fb');
+    const actionSlot = document.getElementById('action-slot');
+    actionSlot.innerHTML = '';
+
+    if (correct) {
+      cards[chosenIdx].classList.add('correct');
+      cards.forEach((c, i) => { if (i !== chosenIdx) c.classList.add('dim'); });
+      this.state.collectedCodes.push(q.codeLetter);
+      this.updateCodeProgress();
+      fb.className = 'feedback ok show';
+      fb.innerHTML = `✅ <b>Benar!</b> Kamu mengumpulkan huruf kode <b style="color:var(--gold-deep);">"${q.codeLetter}"</b>.<br>${q.explanation}`;
+      this.state.answers.push({ level: this.state.level + 1, qIndex: this.state.qIndex + 1,
+        chosen: q.options[chosenIdx], correct: true, helpUsed: this.state._pendingHelp });
+      this.state._pendingHelp = false;
+      this.updateHUD(); this.syncLive();
+      const isLast = this.state.qIndex === level.questions.length - 1;
+      const allCollected = this.state.collectedCodes.length === level.password.length;
+      if (isLast && allCollected) this.showCodeReady();
+      else actionSlot.innerHTML = `<div class="next-row"><button class="btn btn-mint" onclick="Game.nextQuestion()">Lanjut ➜</button></div>`;
+    } else {
+      cards[chosenIdx].classList.add('wrong');
+      cards.forEach((c, i) => { if (i !== chosenIdx) c.classList.add('dim'); });
+      this.state.wrong++; this.updateHUD(); this.syncLive();
+      fb.className = 'feedback no show';
+      fb.innerHTML = `❌ <b>Belum tepat.</b> Renungkan lagi — perhatikan kata kunci pada kutipan. Kamu <b>tidak</b> mengumpulkan huruf kode kali ini.`;
+      this.state.answers.push({ level: this.state.level + 1, qIndex: this.state.qIndex + 1,
+        chosen: q.options[chosenIdx], correct: false, helpUsed: this.state._pendingHelp });
+      this.state._pendingHelp = false;
+      this.showHelpChoice();
+    }
+  },
+
+  showHelpChoice() {
+    const actionSlot = document.getElementById('action-slot');
+    const canUseHelp = !this.state.helpUsedThisLevel;
+    if (canUseHelp) {
+      actionSlot.innerHTML = `<div class="help-choice">
+        <div class="title-sm">🪄 Kamu salah — pilih tindakanmu</div>
+        <div class="hint">Gunakan kartu bantuan (−2 poin) atau coba lagi tanpa bantuan.</div>
+        <button class="btn btn-gold" onclick="Game.useHelp()">🪄 Pakai Kartu Bantuan (−2 poin)</button>
+        <button class="btn btn-pink" onclick="Game.retryQuestion()">🔄 Coba Lagi Tanpa Bantuan</button>
+      </div>`;
+    } else {
+      actionSlot.innerHTML = `<div class="help-choice">
+        <div class="title-sm">🔄 Coba Lagi</div>
+        <div class="hint">Kartu bantuan level ini sudah dipakai.</div>
+        <button class="btn btn-pink" onclick="Game.retryQuestion()">🔄 Coba Lagi</button>
+      </div>`;
+    }
+    actionSlot.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  },
+
+  useHelp() {
+    if (this.state.helpUsedThisLevel) return;
+    const q = LEVELS[this.state.level].questions[this.state.qIndex];
+    const hint = this.makeHint(q);
+    this.state.helpUsed++;
+    this.state.helpUsedThisLevel = true;
+    this.state.score = Math.max(0, this.state.score - 2);
+    this.state._pendingHelp = true;
+    const fb = document.getElementById('fb');
+    if (fb) { fb.className = 'feedback help show'; fb.innerHTML = `💡 <b>Petunjuk:</b> ${hint}`; }
+    document.getElementById('action-slot').innerHTML = `<div class="next-row"><button class="btn btn-pink" onclick="Game.retryQuestion()">🔄 Coba Lagi</button></div>`;
+    this.updateHUD(); this.syncLive();
+    toast('Kartu bantuan digunakan (-2 poin).', 'gold');
+  },
+
+  makeHint(q) {
+    const idx = this.state.level;
+    if (idx === 0) return 'Perhatikan kata kerja yang biasanya dilakukan manusia — jika melekat pada benda, itu personifikasi. Jika ada kata "adalah" yang menyamakan dua hal, itu metafora. Jika ada angka/gambaran yang dilebih-lebihkan, itu hiperbola.';
+    if (idx === 1) return 'Simile ditandai kata "seperti/bagaikan/laksana". Metafora membandingkan langsung tanpa kata pembanding. Personifikasi memberi sifat manusia pada benda. Hiperbola melebih-lebihkan.';
+    return 'Ironi adalah sindiran halus — biasanya kata yang diberi tanda kutip justru bermakna sebaliknya.';
+  },
+
+  retryQuestion() { this.renderLevel(); },
+  nextQuestion() { this.state.qIndex++; this.renderLevel(); },
+
+  showCodeReady() {
+    document.getElementById('action-slot').innerHTML = `<div style="text-align:center;padding:10px 0;">
+      <p style="color:var(--green-deep);font-weight:900;font-size:.9rem;">✨ Semua huruf kode berhasil dikumpulkan!</p>
+      <p style="color:var(--ink-dim);font-size:.78rem;margin-top:6px;">Ketik kode lengkap di kolom di atas, lalu tekan <b>Buka 🔓</b>.</p>
+    </div>`;
+    const input = document.getElementById('code-input');
+    if (input) { input.focus(); input.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  },
+
+  submitCode() {
+    const level = LEVELS[this.state.level];
+    const input = document.getElementById('code-input');
+    const msg = document.getElementById('code-msg');
+    const val = (input.value || '').trim().toUpperCase();
+    if (this.state.collectedCodes.length < level.password.length) {
+      msg.style.color = 'var(--red)';
+      msg.textContent = 'Kumpulkan semua huruf kode terlebih dahulu.';
+      return;
+    }
+    if (val === level.password) {
+      msg.style.color = 'var(--green-deep)';
+      msg.textContent = '✅ Kode benar! Pintu terbuka...';
+      document.getElementById('code-submit').disabled = true;
+      input.disabled = true;
+      const collector = document.getElementById('code-collector');
+      if (collector) collector.classList.add('unlocked');
+      setTimeout(() => this.nextLevel(), 900);
+    } else {
+      msg.style.color = 'var(--red)';
+      msg.textContent = '❌ Kode salah. Periksa urutan huruf dari kartu jawabanmu.';
+    }
+  },
+
+  nextLevel() {
+    const next = this.state.level + 1;
+    if (next < LEVELS.length) { this.loadLevel(next); toast(`Level ${next + 1} dimulai!`, 'gold'); }
+    else this.finish();
+  },
+
+  finish() {
+    this.state.endTime = Date.now(); this.state.finished = true;
+    clearInterval(this._timer); this.updateHUD(); this.updateProgressLock(); this.syncLive();
+    this.saveResult(); this.showVictory();
+  },
+
+  saveResult() {
+    const s = this.state;
+    const dur = Math.floor((s.endTime - s.startTime) / 1000);
+    const result = { id: s.id, name: s.player.name, class: s.player.class,
+      level: LEVELS.length, score: s.score, wrong: s.wrong, help: s.helpUsed,
+      duration: dur, durationStr: formatTime(dur), finished: true,
+      finishedAt: new Date().toISOString(), answers: s.answers };
+    const all = loadResults(); all.push(result); saveResults(all);
+  },
+
+  showVictory() {
+    const s = this.state;
+    const dur = Math.floor((s.endTime - s.startTime) / 1000);
+    document.getElementById('v-score').textContent = s.score;
+    document.getElementById('v-wrong').textContent = s.wrong;
+    document.getElementById('v-help').textContent = s.helpUsed;
+    document.getElementById('v-time').textContent = formatTime(dur);
+    let groupName, groupColor;
+    if (s.score >= 90) { groupName = '👑 Master Cryptologist'; groupColor = 'var(--gold-deep)'; }
+    else if (s.score >= 70) { groupName = '🕵️ Code Breaker'; groupColor = 'var(--violet-deep)'; }
+    else { groupName = '🔐 Cipher Novice'; groupColor = 'var(--sky-deep)'; }
+    document.getElementById('v-group-name').textContent = groupName;
+    document.getElementById('v-group-name').style.color = groupColor;
+    let msg = 'Selamat! Kamu berhasil membuka mystery box dan keluar dari ruang misteri!';
+    if (s.wrong === 0 && s.helpUsed === 0) msg = 'Sempurna! Kamu berhasil escape tanpa kesalahan dan tanpa bantuan — pemburu majas sejati!';
+    else if (s.score >= 90) msg = 'Luar biasa! Kemampuan memecahkan kode majasmu sangat kuat!';
+    else if (s.score >= 70) msg = 'Bagus! Kamu berhasil keluar dari ruang misteri dengan baik.';
+    else msg = 'Kamu berhasil keluar! Teruslah berlatih memahami majas.';
+    document.getElementById('v-msg').textContent = msg;
+    this.go('victory'); spawnConfetti();
+  }
+};
+
+const Teacher = {
+  _refreshInterval: null, _qrUrl: '',
+
+  login() {
+    const code = document.getElementById('in-tcode').value.trim();
+    const err = document.getElementById('tcode-err');
+    if (code === PASSWORDS.teacher) {
+      err.textContent = ''; Game.go('teacher'); this.renderQR(); this.refresh();
+    } else { err.textContent = 'Kode guru salah.'; }
+  },
+
+  buildJoinURL() {
+    const base = window.location.href.split('?')[0].split('#')[0];
+    return base + '?session=HUNTER01&code=' + PASSWORDS.student;
+  },
+
+  renderQR() {
+    const canvas = document.getElementById('qr-canvas');
+    if (!canvas) return;
+    const url = this.buildJoinURL();
+    this._qrUrl = url;
+    const sub = document.getElementById('qr-sub');
+    const isFileURL = url.startsWith('file://');
+    if (isFileURL) {
+      sub.innerHTML = '<span style="color:#ef4444;font-weight:800;">⚠️ QR tidak bisa di-scan</span><br><span style="font-size:.55rem;">Game dibuka dari file lokal. Deploy ke hosting online dulu (Netlify/Vercel/GitHub Pages) agar QR berfungsi.</span>';
+    }
+    let matrix = QRGenerator.generate(url);
+    if (matrix) {
+      QRGenerator.drawOnCanvas(canvas, matrix, { moduleSize: 4, quiet: 4, fgColor: '#7c3aed', bgColor: '#ffffff' });
+      if (!isFileURL) sub.textContent = 'Scan QR ini dengan kamera HP untuk join game';
+    } else {
+      canvas.style.display = 'none';
+      const existing = canvas.parentNode.querySelector('img');
+      if (existing) existing.remove();
+      const img = new Image();
+      img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(url);
+      img.alt = 'QR Code';
+      img.style.borderRadius = '6px';
+      img.style.display = 'block';
+      img.style.maxWidth = '200px';
+      canvas.parentNode.appendChild(img);
+      if (!isFileURL) sub.textContent = 'QR dibuat via API publik';
+    }
+  },
+
+  copyLink() {
+    const url = this._qrUrl || this.buildJoinURL();
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(url).then(() => toast('Link join disalin!', 'ok'))
+        .catch(() => this._fallbackCopy(url));
+    } else this._fallbackCopy(url);
+  },
+
+  _fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); toast('Link disalin!', 'ok'); }
+    catch (e) { toast('Gagal menyalin.', 'bad'); }
+    document.body.removeChild(ta);
+  },
+
+  testQR() {
+    const url = this._qrUrl || this.buildJoinURL();
+    if (url.startsWith('file://')) { toast('URL file:// tidak bisa dibuka di HP. Deploy dulu ke hosting online.', 'bad'); return; }
+    window.open(url, '_blank');
+    toast('Membuka URL join…', 'gold');
+  },
+
+  startLiveRefresh() {
+    this.stopLiveRefresh();
+    this._refreshInterval = setInterval(() => this.refresh(), 1500);
+  },
+  stopLiveRefresh() {
+    if (this._refreshInterval) { clearInterval(this._refreshInterval); this._refreshInterval = null; }
+  },
+
+  refresh() {
+    const session = getSession(); const results = loadResults();
+    const map = new Map();
+    session.forEach(s => map.set(s.id, s));
+    results.forEach(r => { if (map.has(r.id)) map.set(r.id, { ...map.get(r.id), ...r, finished: true }); else map.set(r.id, r); });
+    const data = Array.from(map.values());
+    const finished = data.filter(d => d.finished);
+    document.getElementById('st-total').textContent = data.length;
+    document.getElementById('st-done').textContent = finished.length;
+    document.getElementById('st-avg').textContent = finished.length ? Math.round(finished.reduce((a,d)=>a+d.score,0)/finished.length) : 0;
+    document.getElementById('st-err').textContent = data.reduce((a,d)=>a+(d.wrong||0),0);
+    document.getElementById('st-help').textContent = data.reduce((a,d)=>a+(d.help||0),0);
+    const tb = document.getElementById('t-table');
+    if (!data.length) { tb.innerHTML = '<tr><td colspan="10" class="empty-cell">Menunggu murid bergabung…</td></tr>'; }
+    else {
+      tb.innerHTML = data.map((d, i) => {
+        const lvl = d.finished ? 3 : (d.level || 0);
+        const levelBar = [1,2,3].map(n => `<div class="seg ${n <= lvl ? 'done' : ''}"></div>`).join('');
+        const status = d.finished ? `<span class="status-done">✅ Escape</span>` : `<span class="status-playing">🔐 Terkunci</span>`;
+        return `<tr><td>${i+1}</td><td><b>${escapeHTML(d.name||'-')}</b></td><td>${escapeHTML(d.class||'-')}</td>
+          <td><div class="lvl-bar">${levelBar}</div></td>
+          <td><b style="color:var(--violet-deep);">${d.score||0}</b></td>
+          <td>${d.wrong||0}</td><td>${d.help||0}</td><td>${d.durationStr||'00:00'}</td>
+          <td>${status}</td><td><button class="btn-link" onclick="Teacher.showDetail('${d.id}')">Lihat</button></td></tr>`;
+      }).join('');
+    }
+    const ranked = finished.map(d => ({ ...d, effective: (d.score||0) - (d.help||0)*0.5 - (d.wrong||0)*0.3 - (d.duration||0)*0.01 }))
+      .sort((a,b) => { if (b.score !== a.score) return b.score - a.score; if (b.effective !== a.effective) return b.effective - a.effective;
+        if (a.help !== b.help) return a.help - b.help; if (a.wrong !== b.wrong) return a.wrong - b.wrong; return (a.duration||0) - (b.duration||0); });
+    this.renderLeaderboard('lb-top', ranked.slice(0, 10));
+    this.renderLeaderboard('lb-next', ranked.slice(10, 20));
+    this.renderGroup('grp-master', ranked.filter(d => d.score >= 90));
+    this.renderGroup('grp-breaker', ranked.filter(d => d.score >= 70 && d.score < 90));
+    this.renderGroup('grp-novice', ranked.filter(d => d.score < 70));
+  },
+
+  renderLeaderboard(elId, list) {
+    const el = document.getElementById(elId);
+    if (!list.length) { el.innerHTML = `<div class="group-empty">${elId === 'lb-top' ? 'Belum ada murid yang menyelesaikan escape.' : 'Menunggu murid berikutnya.'}</div>`; return; }
+    el.innerHTML = list.map((d, i) => {
+      const rank = elId === 'lb-top' ? i + 1 : i + 11;
+      const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+      return `<div class="lb-item ${rank <= 3 ? 'rank-' + rank : ''}">
+        <div class="lb-rank">${medal}</div>
+        <div><div class="lb-name">${escapeHTML(d.name)} <small>· ${escapeHTML(d.class)}</small></div>
+        <div class="lb-detail"><span>⭐ ${d.score}</span><span>🪄 ${d.help||0}</span><span>❌ ${d.wrong||0}</span><span>⏱️ ${d.durationStr||'00:00'}</span></div></div>
+        <div class="lb-score">${d.score}<small>poin</small></div></div>`;
+    }).join('');
+  },
+
+  renderGroup(prefix, list) {
+    document.getElementById(prefix + '-count').textContent = list.length;
+    const el = document.getElementById(prefix + '-list');
+    if (!list.length) { el.innerHTML = '<div class="group-empty">Belum ada anggota.</div>'; return; }
+    el.innerHTML = list.map(d => `<div class="group-member"><span>${escapeHTML(d.name)}</span><span class="pts">${d.score} poin</span></div>`).join('');
+  },
+
+  showDetail(id) {
+    const d = loadResults().find(r => r.id === id) || getSession().find(s => s.id === id);
+    if (!d) return;
+    if (d.answers && d.answers.length) {
+      const lines = d.answers.map(a => `L${a.level} Q${a.qIndex}: pilih ${a.chosen} — ${a.correct ? 'BENAR' : 'SALAH'}${a.helpUsed ? ' (bantuan)' : ''}`).join('\n');
+      alert(`Detail — ${d.name} (${d.class})\n\n${lines}`);
+    } else {
+      alert(`Detail — ${d.name} (${d.class})\n\nStatus: ${d.finished ? 'Escape' : 'Terkunci'}\nSkor: ${d.score}\nSalah: ${d.wrong}\nBantuan: ${d.help}\nDurasi: ${d.durationStr}`);
+    }
+  },
+
+  exportCSV() {
+    const session = getSession(); const results = loadResults();
+    const map = new Map(); session.forEach(s => map.set(s.id, s));
+    results.forEach(r => map.set(r.id, { ...map.get(r.id), ...r }));
+    const data = Array.from(map.values());
+    if (!data.length) return toast('Belum ada data untuk diekspor.', 'bad');
+    const header = ['No','ID','Nama','Kelas','Level','Skor','Salah','Bantuan','Durasi','Status','Selesai Pada','Kelompok'];
+    const rows = data.map((d, i) => {
+      let grup = '-';
+      if (d.finished) { grup = d.score >= 90 ? 'Master Cryptologist' : d.score >= 70 ? 'Code Breaker' : 'Cipher Novice'; }
+      return [i+1, d.id, d.name, d.class, d.finished ? 3 : (d.level||0), d.score||0, d.wrong||0, d.help||0,
+        d.durationStr||'00:00', d.finished ? 'Escape' : 'Terkunci', d.finishedAt || '-', grup];
+    });
+    const csv = [header, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `rekap_majas_hunter_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click(); URL.revokeObjectURL(url);
+    toast('CSV berhasil diunduh.', 'ok');
+  },
+
+  clearAll() {
+    if (!confirm('Hapus semua data murid (live & hasil)?')) return;
+    saveResults([]); saveSession([]); this.refresh();
+    toast('Data berhasil dihapus.', 'ok');
+  }
+};
+
+window.addEventListener('storage', (e) => {
+  if (e.key === SESSION_STORAGE_KEY || e.key === STORAGE_KEY) {
+    const ts = document.getElementById('scr-teacher');
+    if (ts && ts.classList.contains('active')) Teacher.refresh();
+  }
+});
+
+function loadResults() { try { const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : []; } catch (e) { return []; } }
+function saveResults(arr) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); } catch(e){} }
+function formatTime(sec) { const m = Math.floor(sec / 60).toString().padStart(2,'0'); const s = (sec % 60).toString().padStart(2,'0'); return `${m}:${s}`; }
+function escapeHTML(str) { return String(str).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+let _toastTimer;
+function toast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'show ' + type;
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => { t.className = type; }, 2800);
+}
+
+(function buildBokeh() {
+  const container = document.getElementById('bokeh-container');
+  const colors = ['#22c55e','#38bdf8','#a855f7','#fbbf24','#fde047','#ec4899','#ffffff'];
+  for (let i = 0; i < 30; i++) {
+    const b = document.createElement('div');
+    b.className = 'bokeh';
+    const size = 8 + Math.random() * 24;
+    b.style.width = size + 'px';
+    b.style.height = size + 'px';
+    b.style.left = Math.random() * 100 + '%';
+    b.style.bottom = '-10%';
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    b.style.background = color;
+    b.style.boxShadow = `0 0 ${size * 2}px ${color}`;
+    b.style.animationDuration = (12 + Math.random() * 14) + 's';
+    b.style.animationDelay = (Math.random() * 14) + 's';
+    container.appendChild(b);
+  }
+})();
+
+function spawnConfetti() {
+  const c = document.createElement('div');
+  c.className = 'confetti'; document.body.appendChild(c);
+  const colors = ['#22c55e','#38bdf8','#a855f7','#fbbf24','#fde047','#ec4899','#fff','#ef4444'];
+  for (let i = 0; i < 130; i++) {
+    const p = document.createElement('div');
+    p.className = 'conf';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    p.style.animationDuration = (2.5 + Math.random() * 2.5) + 's';
+    p.style.animationDelay = (Math.random() * 1.5) + 's';
+    p.style.transform = `rotate(${Math.random() * 360}deg)`;
+    c.appendChild(p);
+  }
+  setTimeout(() => c.remove(), 6500);
+}
+
+(function checkStorage() {
+  try { localStorage.setItem('__test','1'); localStorage.removeItem('__test'); }
+  catch (e) { toast('Peringatan: localStorage tidak tersedia.', 'bad'); }
+})();
+
+(function parseURL() {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
+  if (code) { const inCode = document.getElementById('in-code'); if (inCode) inCode.value = code.toUpperCase(); }
+})();
+</script>
+</body>
+</html>
